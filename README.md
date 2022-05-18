@@ -54,4 +54,4 @@ All configuration can be done in config.py
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
 
-# This repository is in alpha, any issues can be posted under the issues tab.
+# This repository is in beta, any issues can be posted under the issues tab.
