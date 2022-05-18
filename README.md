@@ -4,14 +4,13 @@ Multi Instance Macro Resetter for Linux.
 # Dependencies
 - keyboard (https://github.com/boppreh/keyboard)
 - wmctrl
-- python-xlib
 
 # Installation
 ## Dependencies
 Dependencies are installed with sudo, because keyboard requires sudo in order to run on Linux.
-### keyboard and python-xlib
+### keyboard
 ```
-sudo pip install keyboard python-xlib
+sudo pip install keyboard
 ```
 ### wmctrl
 - Debian/Debian-based distros (Ubuntu, PopOS!_, Linux Mint, Zorin OS, etc)
