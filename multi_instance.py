@@ -1,4 +1,3 @@
-from Xlib import display
 import keyboard
 import macro_handlers.instance_switch_handler as switch_macro
 import macro_handlers.rsg_reset_macro as reset_macro
@@ -7,18 +6,11 @@ import subprocess
 
 
 def get_open_instances():
-    disp = display.Display()
-    root = disp.screen().root
-
-    query = root.query_tree()
     instances = []
-
-    for child in query.children:
-        name = child.get_wm_name()
-        if not name:
-            continue
-        if name.find("Minecraft") != -1:
-            instances.append(child)
+    open_windows = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
+    for window in open_windows:
+        if window.find("Minecraft") != -1:
+            instances.append(window)
 
     print("Debug Info: Instance names have been stored.")
     return instances
@@ -33,15 +25,6 @@ def get_hex_codes():
 
     print("Debug Info: Hex codes of the windows obtained.")
     return hex_codes
-
-
-def change_instance_names(instances):
-    countr = 1
-    for child in instances:
-        name = child.get_wm_name()
-        child.set_wm_name(name + " Instance " + str(countr))
-        countr += 1
-    print("Debug Info: Instance names have been changed.")
 
 
 def handle_instance_keybinds(instances, hex_codes):
@@ -77,7 +60,6 @@ def main():
         )
         return
 
-    change_instance_names(open_instances)
     handle_instance_keybinds(open_instances, hex_codes)
 
 
