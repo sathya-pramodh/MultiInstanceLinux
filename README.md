@@ -14,17 +14,17 @@ Dependencies are installed with sudo, because keyboard requires sudo in order to
 sudo pip install keyboard python-xlib
 ```
 ### wmctrl
-#### Debian/Debian-based distros (Ubuntu, PopOS!_, Linux Mint, Zorin OS, etc)
+- Debian/Debian-based distros (Ubuntu, PopOS!_, Linux Mint, Zorin OS, etc)
 ```
 sudo apt update
 sudo apt install wmctrl
 ```
-#### Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
+- Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
 ```
 sudo pacman -Sy
 sudo pacman -S wmctrl
 ```
-#### RHEL/RHEL-based distros (Fedora)
+- RHEL/RHEL-based distros (Fedora)
 ```
 sudo dnf upgrade
 sudo dnf intall wmctrl
