@@ -1,5 +1,5 @@
 # MultiInstanceLinux
-Multi Instance Macro Resetter for Linux.
+Multi Instance Macro Resetter for Minecraft on Linux.
 
 # Dependencies
 - keyboard (https://github.com/boppreh/keyboard)
