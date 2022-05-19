@@ -56,7 +56,7 @@ cd MultiInstanceLinux/
 ```
 
 # Usage
-- This command must be exectued in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
+- This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
 ```
 sudo python3 multi_instance.py
 ```
