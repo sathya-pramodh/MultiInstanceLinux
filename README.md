@@ -1,13 +1,27 @@
 # MultiInstanceLinux
-Multi Instance Macro Resetter for Minecraft on Linux.
+Multi Instance Macro Handler for Minecraft on Linux.
 
 # Dependencies
 - keyboard (https://github.com/boppreh/keyboard)
-- wmctrl
+- wmctrl (https://github.com/dancor/wmctrl)
 
 # Installation
-## Dependencies
-Dependencies are installed with sudo, because keyboard requires sudo in order to run on Linux.
+## pip
+- Debian/Debian-based distros (Ubuntu, PopOS!_, Linux Mint, Zorin OS, etc)
+```
+sudo apt update
+sudo apt install python-pip
+```
+- Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
+```
+sudo pacman -Sy
+sudo pacman -S python-pip
+```
+- RHEL/RHEL-based distros (Fedora)
+```
+sudo dnf upgrade
+sudo dnf install python-pip
+```
 ### keyboard
 ```
 sudo pip install keyboard
@@ -28,10 +42,22 @@ sudo pacman -S wmctrl
 sudo dnf upgrade
 sudo dnf intall wmctrl
 ```
-# Run the Script
+
+## Clone this repository
+- Pick a download location for the script. The given instructions stores the script in ~/MultiInstanceLinux.
+- For example: If you want to store the script in ~/Downloads, then do the following:
+```
+cd ~/Downloads
+```
+- Then execute this command given below
 ```
 git clone https://github.com/sathya-pramodh/MultiInstanceLinux
 cd MultiInstanceLinux/
+```
+
+# Usage
+- This command must be exectued in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
+```
 sudo python3 multi_instance.py
 ```
 
@@ -48,7 +74,8 @@ sudo python3 multi_instance.py
 - Ctrl+9 - Switch to Instance 9
 
 # Configuration
-All configuration can be done in config.py
+- All configurations can be done in config.py
+
 ## Variable Descriptions
 - NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
