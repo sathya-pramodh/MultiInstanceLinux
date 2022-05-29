@@ -42,22 +42,6 @@ import config
 import subprocess
 
 
-def get_open_instances():
-    """
-    Gets the open Minecraft instances by executing the command "wmctrl -l".
-
-    Returns the list of open Minecraft instances and their full names.
-    """
-    instances = []
-    open_windows = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
-    for window in open_windows:
-        if window.find("Minecraft") != -1:
-            instances.append(window)
-
-    print("Debug Info: Instance names have been stored.")
-    return instances
-
-
 def get_hex_codes():
     """
     Gets the hex codes of the open Minecraft instances by executing the command "wmctrl -l".
@@ -70,11 +54,10 @@ def get_hex_codes():
         if process.find("Minecraft") != -1:
             hex_codes.append(process.split()[0])
 
-    print("Debug Info: Hex codes of the windows obtained.")
     return hex_codes
 
 
-def handle_instance_keybinds(instances, hex_codes):
+def handle_instance_keybinds(hex_codes):
     """
     Handles the instance keybinds defined in config.py.
 
@@ -86,19 +69,27 @@ def handle_instance_keybinds(instances, hex_codes):
     Returns None
     """
     instance_keybinds = config.SWITCH_INSTANCES
-    reset_keybinds = config.RESET_ALL_INSTANCES
+    reset_all_keybinds = config.RESET_ALL_INSTANCES
+    reset_one_keybinds = config.RESET_INSTANCES
     while True:
         for instance_keybind in instance_keybinds:
             if keyboard.is_pressed(instance_keybind):
                 switch_macro.switch_macro(
-                    instance_keybinds, instances, instance_keybind, hex_codes
+                    instance_keybinds, instance_keybind, hex_codes
                 )
                 print("Debug Info: Switched to respective instance.")
 
-        for reset_keybind in reset_keybinds:
-            if keyboard.is_pressed(reset_keybind):
-                reset_macro.reset_macro(hex_codes)
+        for reset_all_keybind in reset_all_keybinds:
+            if keyboard.is_pressed(reset_all_keybind):
+                reset_macro.reset_all_macro(hex_codes)
                 print("Debug Info: All instances reset.")
+
+        for reset_one_keybind in reset_one_keybinds:
+            if keyboard.is_pressed(reset_one_keybind):
+                reset_macro.reset_one_macro(
+                    reset_one_keybinds, reset_one_keybind, hex_codes
+                )
+                print("Debug Info: Instance was reset.")
 
 
 def main():
@@ -114,16 +105,16 @@ def main():
             )
             return -1
 
-        open_instances = get_open_instances()
         hex_codes = get_hex_codes()
+        print("Debug Info: Hex codes of the windows obtained.")
 
-        if len(open_instances) != config.NUM_INSTANCES:
+        if len(hex_codes) != config.NUM_INSTANCES:
             print(
                 "Some instances are not open. Please check if your instances are open."
             )
             return -1
 
-        handle_instance_keybinds(open_instances, hex_codes)
+        handle_instance_keybinds(hex_codes)
     except KeyboardInterrupt:
         return 0
 

@@ -30,45 +30,44 @@ Called from handle_instance_keybinds in multi_instance.py
 # SOFTWARE.
 
 # Imports
-import keyboard
 import time
 import os
 
 
-def reset_macro(hex_codes):
+def reset_all_macro(hex_codes):
     """
-    Handles the resetting macro on all instances by executing the command "wmctrl -i -a <hex_code_of_window>".
-    It then executes the macro which is hardcoded for Minecraft 1.16.1.
+    Handles the resetting macro on all instances.
+    It is hardcoded for Minecraft 1.16.1.
 
     hex_codes
         A list of the hex codes of the open Minecraft Instances.
 
     Returns None
     """
+    macro = " Tab+" * 8 + "Enter"
     for hex_code in hex_codes:
         os.system("wmctrl -i -a " + hex_code)
-        time.sleep(0.1)
-        for i in range(8):
-            keyboard.press_and_release("Tab")
-            time.sleep(0.1)
-        keyboard.press_and_release("Return")
-        time.sleep(3)
-        keyboard.press_and_release("Tab")
-        time.sleep(0.1)
-        keyboard.press_and_release("Return")
-        time.sleep(0.1)
-        for i in range(3):
-            keyboard.press_and_release("Tab")
-            time.sleep(0.1)
-        keyboard.press_and_release("Return")
-        time.sleep(0.1)
-        for i in range(2):
-            keyboard.press_and_release("Tab")
-            time.sleep(0.1)
-        for i in range(3):
-            keyboard.press_and_release("Return")
-            time.sleep(0.1)
-        for i in range(5):
-            keyboard.press_and_release("Tab")
-            time.sleep(0.1)
-        keyboard.press_and_release("Return")
+        os.system("xdotool key --window " + hex_code + macro)
+        time.sleep(0.01)
+
+
+def reset_one_macro(reset_keybinds, keybind, hex_codes):
+    """
+    Handles the reset instances macro.
+    It is hardcoded for Minecraft 1.16.1.
+
+    reset_keybinds
+        A list of keybinds as strings.
+    keybind
+        A string denoting the keybind pressed.
+    hex_codes
+        A list of the hex codes of the open Minecraft instances.
+
+    Returns None
+    """
+    instance_number = reset_keybinds.index(keybind)
+    hex_code = hex_codes[instance_number]
+    macro = " Tab+"*8 + "Enter"
+    os.system("wmctrl -i -a " + hex_code)
+    time.sleep(0.25)
+    os.system("xdotool key --window " + hex_code + macro)

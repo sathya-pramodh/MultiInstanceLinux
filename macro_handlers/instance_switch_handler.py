@@ -36,14 +36,12 @@ Called from handle_instance_keybinds() in multi_instance.py
 import os
 
 
-def switch_macro(instance_keybinds, instances, keybind, hex_codes):
+def switch_macro(instance_keybinds, keybind, hex_codes):
     """
     Handles the switch instances macro by using the command "wmctrl -i -a <hex_code_of_window>".
 
     instance_keybinds
         A list of keybinds as strings.
-    instances
-        A list of open Minecraft instances.
     keybind
         A string denoting the keybind pressed.
     hex_codes
@@ -52,7 +50,5 @@ def switch_macro(instance_keybinds, instances, keybind, hex_codes):
     Returns None
 
     """
-    instance_number = instance_keybinds.index(keybind) + 1
-    for child in instances:
-        if child.split()[0] == hex_codes[instance_number - 1]:
-            os.system("wmctrl -i -a" + str(hex_codes[instance_number - 1]))
+    instance_number = instance_keybinds.index(keybind)
+    os.system("wmctrl -i -a" + hex_codes[instance_number])
