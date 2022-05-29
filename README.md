@@ -122,3 +122,4 @@ git pull origin main
 - NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
+- RESET_INSTANCES - The list of keybinds (in order of instance number) to reset that respective instance.
