@@ -81,19 +81,6 @@ sudo python3 multi_instance.py
 - Remember to always remain in the escape menu while executing the macro. Otherwise weird things would happen because the macro is hardcoded assuming that you are in the escape menu.
 - This macro also assumes that you are using Atum and FastReset mods for Minecraft 1.16.1. It is hardcoded assuming so.
 
-# Update the Script
-- These commands must be executed in a terminal if you want to update the script.
-- Note that you will have to change working directory to the directory where you decided to download the script.
-- For example: If you had stored the script in ~/Downloads, then do the following:
-```
-cd ~/Downloads
-```
-- Then execute this command given below:
-```
-cd MultiInstanceLinux/
-git pull origin main
-```
-
 # Default Keybinds
 - `Ctrl+R` - Reset all instances (RSG)
 - `Shift+1` - Reset Instance 1 (RSG)
