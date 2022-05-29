@@ -61,7 +61,7 @@ sudo pacman -S xdotool
 sudo dnf upgrade
 sudo dnf install xdotool
 ```
-## Download the latest release of the zipped source code from the releases page
+## Download the latest release from the releases page
 
 ## Extract the .zip or .tar.gz file and then follow the usage instructions
 
