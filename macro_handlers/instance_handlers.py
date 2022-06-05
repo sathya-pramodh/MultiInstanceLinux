@@ -1,11 +1,14 @@
 """
-This is a helper script that handles the reset keybinds.
-Called from handle_instance_keybinds in multi_instance.py
+This is a helper script that handles the instance keybinds.
+Called from handle_instance_keybinds() in multi_instance.py
 """
+
 # Author: sathya-pramodh
-# Github: https://github.com/sathya-pramodh
-# Software licensed under the MIT license.
-# License Terms:
+# Github: https://github.com/sathya-pramodh/
+
+# Software Licensed under the MIT License.
+
+# License terms:
 
 # MIT License
 
@@ -34,29 +37,11 @@ import time
 import os
 
 
-def reset_all_macro(hex_codes):
+def instance_switch_macro(instance_keybinds, keybind, hex_codes):
     """
-    Handles the resetting macro on all instances.
-    It is hardcoded for Minecraft 1.16.1.
+    Handles the switch instances macro.
 
-    hex_codes
-        A list of the hex codes of the open Minecraft Instances.
-
-    Returns None
-    """
-    macro = " Tab+" * 8 + "Enter"
-    for hex_code in hex_codes:
-        os.system("wmctrl -i -a " + hex_code)
-        os.system("xdotool key --window " + hex_code + macro)
-        time.sleep(0.01)
-
-
-def reset_one_macro(reset_keybinds, keybind, hex_codes):
-    """
-    Handles the reset instances macro.
-    It is hardcoded for Minecraft 1.16.1.
-
-    reset_keybinds
+    instance_keybinds
         A list of keybinds as strings.
     keybind
         A string denoting the keybind pressed.
@@ -64,10 +49,13 @@ def reset_one_macro(reset_keybinds, keybind, hex_codes):
         A list of the hex codes of the open Minecraft instances.
 
     Returns None
+
     """
-    instance_number = reset_keybinds.index(keybind)
-    hex_code = hex_codes[instance_number]
-    macro = " Tab+"*8 + "Enter"
-    os.system("wmctrl -i -a " + hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + hex_code + macro)
+    instance_number = instance_keybinds.index(keybind)
+    target_hex_code = hex_codes[instance_number]
+    for hex_code in hex_codes:
+        if hex_code != target_hex_code:
+            os.system("wmctrl -i -a " + hex_code)
+            time.sleep(0.25)
+            os.system("xdotool key --window " + hex_code + " Escape")
+    os.system("wmctrl -i -a " + target_hex_code)

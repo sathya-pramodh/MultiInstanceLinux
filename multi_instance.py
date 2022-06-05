@@ -36,8 +36,8 @@ https://github.com/sathya-pramodh/MultiInstanceLinux/
 
 # Imports
 import keyboard
-import macro_handlers.instance_switch_handler as switch_macro
-import macro_handlers.rsg_reset_macro as reset_macro
+import macro_handlers.instance_handlers as switch_macro
+import macro_handlers.reset_handlers as reset_macro
 import config
 import subprocess
 
@@ -61,8 +61,6 @@ def handle_instance_keybinds(hex_codes):
     """
     Handles the instance keybinds defined in config.py.
 
-    instances
-        A list of all open instances as strings.
     hex_codes
         A list of the corresponding hex codes of the open instances.
 
@@ -70,11 +68,11 @@ def handle_instance_keybinds(hex_codes):
     """
     instance_keybinds = config.SWITCH_INSTANCES
     reset_all_keybinds = config.RESET_ALL_INSTANCES
-    reset_one_keybinds = config.RESET_INSTANCES
+    reset_one_keybinds = config.RESET_CURRENT_INSTANCE
     while True:
         for instance_keybind in instance_keybinds:
             if keyboard.is_pressed(instance_keybind):
-                switch_macro.switch_macro(
+                switch_macro.instance_switch_macro(
                     instance_keybinds, instance_keybind, hex_codes
                 )
                 print("Debug Info: Switched to respective instance.")
@@ -86,9 +84,7 @@ def handle_instance_keybinds(hex_codes):
 
         for reset_one_keybind in reset_one_keybinds:
             if keyboard.is_pressed(reset_one_keybind):
-                reset_macro.reset_one_macro(
-                    reset_one_keybinds, reset_one_keybind, hex_codes
-                )
+                reset_macro.reset_current_macro()
                 print("Debug Info: Instance was reset.")
 
 
@@ -101,7 +97,7 @@ def main():
     try:
         if config.NUM_INSTANCES > 9 or config.NUM_INSTANCES < 2:
             print(
-                "The number of instances is < 2 or > 9. Please make necessary changes to the config file."
+                "The number of instances should be less than 2 or greater than 9. Please make necessary changes to the config file."
             )
             return -1
 

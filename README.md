@@ -78,20 +78,11 @@ cd MultiInstanceLinux/
 sudo python3 multi_instance.py
 ```
 ## Some important instructions
-- Remember to always remain in the escape menu while executing the macro. Otherwise weird things would happen because the macro is hardcoded assuming that you are in the escape menu.
 - This macro also assumes that you are using Atum and FastReset mods for Minecraft 1.16.1. It is hardcoded assuming so.
 
 # Default Keybinds
 - `Ctrl+R` - Reset all instances (RSG)
-- `Shift+1` - Reset Instance 1 (RSG)
-- `Shift+2` - Reset Instance 2 (RSG)
-- `Shift+3` - Reset Instance 3 (RSG)
-- `Shift+4` - Reset Instance 4 (RSG)
-- `Shift+5` - Reset Instance 5 (RSG)
-- `Shift+6` - Reset Instance 6 (RSG)
-- `Shift+7` - Reset Instance 7 (RSG)
-- `Shift+8` - Reset Instance 8 (RSG)
-- `Shift+9` - Reset Instance 9 (RSG)
+- `Shift+R` - Reset the current instance (RSG)
 - `Ctrl+1` - Switch to Instance 1
 - `Ctrl+2` - Switch to Instance 2
 - `Ctrl+3` - Switch to Instance 3
@@ -109,4 +100,4 @@ sudo python3 multi_instance.py
 - NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
-- RESET_INSTANCES - The list of keybinds (in order of instance number) to reset that respective instance.
+- RESET_INSTANCES - The list of keybinds to reset the current instance.

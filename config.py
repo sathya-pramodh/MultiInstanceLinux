@@ -29,19 +29,9 @@ SWITCH_INSTANCES = [
 # The default is ["ctrl+r"].
 RESET_ALL_INSTANCES = ["ctrl+r"]
 
-# The list of keybinds for resetting each instance (in order of instance number).
+# The list of keybinds for resetting the current instance in focus.
 # Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
 # The allowed values for the keyboard module can be found at: https://github.com/boppreh/keyboard
 # Note: Do not use 'alt' instead of 'shift' here because the macro contains 'Tab' as a part of it and 'alt+tab' is already a keybind in most desktop environments.
-# The default is ["shift+Num 1", "shift+Num 2", "shift+Num 3", "shift+Num 4", "shift+Num 5", "shift+Num 6", "shift+Num 7", "shift+Num 8", "shift+Num 9"]
-RESET_INSTANCES = [
-    "shift+Num 1",
-    "shift+Num 2",
-    "shift+Num 3",
-    "shift+Num 4",
-    "shift+Num 5",
-    "shift+Num 6",
-    "shift+Num 7",
-    "shift+Num 8",
-    "shift+Num 9",
-]
+# The default is ["shift+r"]
+RESET_CURRENT_INSTANCE = ["shift+r"]
