@@ -35,6 +35,7 @@ Called from handle_instance_keybinds() in multi_instance.py
 # Imports
 import time
 import os
+import subprocess
 
 
 def instance_switch_macro(instance_keybinds, keybind, hex_codes):
@@ -53,9 +54,13 @@ def instance_switch_macro(instance_keybinds, keybind, hex_codes):
     """
     instance_number = instance_keybinds.index(keybind)
     target_hex_code = hex_codes[instance_number]
-    for hex_code in hex_codes:
-        if hex_code != target_hex_code:
-            os.system("wmctrl -i -a " + hex_code)
-            time.sleep(0.25)
-            os.system("xdotool key --window " + hex_code + " Escape")
+    current_hex_code_in_base_ten = subprocess.check_output(
+        ["xdotool", "getactivewindow"]
+    ).decode("UTF-8")
+    current_hex_code = hex(int(current_hex_code_in_base_ten))
+    os.system("wmctrl -i -a " + current_hex_code)
+    time.sleep(0.25)
+    os.system("xdotool key --window " + current_hex_code + " Escape")
     os.system("wmctrl -i -a " + target_hex_code)
+    time.sleep(0.25)
+    os.system("xdotool key --window " + target_hex_code + " Escape")

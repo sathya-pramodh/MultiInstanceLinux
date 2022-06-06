@@ -71,6 +71,10 @@ sudo dnf install xdotool
 git clone https://github.com/sathya-pramodh/MultiInstanceLinux
 cd MultiInstanceLinux/
 ```
+- Update your local repository
+```
+git pull origin main
+```
 
 # Usage
 - This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
@@ -100,4 +104,4 @@ sudo python3 multi_instance.py
 - NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
-- RESET_INSTANCES - The list of keybinds to reset the current instance.
+- RESET_CURRENT_INSTANCE - The list of keybinds to reset the current instance.

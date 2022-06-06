@@ -46,13 +46,19 @@ def reset_all_macro(hex_codes):
     Returns None
     """
     macro = " Tab+" * 8 + "Enter"
-    first = True
+    current_hex_code_in_base_ten = subprocess.check_output(
+        ["xdotool", "getwindowfocus"]
+    ).decode("UTF-8")
+    current_hex_code = hex(int(current_hex_code_in_base_ten))
+    os.system("wmctrl -i -a " + current_hex_code)
+    time.sleep(0.25)
+    os.system("xdotool key --window " + current_hex_code + " Escape")
+    os.system("xdotool key --window " + current_hex_code + macro)
     for hex_code in hex_codes:
-        os.system("wmctrl -i -a " + hex_code)
-        if first:
-            os.system("xdotool key --window " + hex_code + " Escape")
-            first = False
-        os.system("xdotool key --window " + hex_code + macro)
+        if hex_code != current_hex_code:
+            os.system("wmctrl -i -a " + hex_code)
+            time.sleep(0.25)
+            os.system("xdotool key --window " + hex_code + macro)
 
 
 def reset_current_macro():
