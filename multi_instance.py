@@ -97,7 +97,7 @@ def main():
     try:
         if config.NUM_INSTANCES > 9 or config.NUM_INSTANCES < 2:
             print(
-                "The number of instances should be less than 2 or greater than 9. Please make necessary changes to the config file."
+                "The number of instances should be greater than 1 and lesser than 9. Please make necessary changes to the config file."
             )
             return -1
 
