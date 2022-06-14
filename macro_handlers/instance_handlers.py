@@ -38,18 +38,23 @@ import os
 import subprocess
 
 
-def instance_switch_macro(instance_keybinds, keybind, hex_codes):
+def instance_switch_macro(instance_keybinds, keybind, hex_codes, pids):
     """
     Handles the switch instances macro.
 
     instance_keybinds
-        A list of keybinds as strings.
-    keybind
-        A string denoting the keybind pressed.
-    hex_codes
-        A list of the hex codes of the open Minecraft instances.
+    A list of keybinds as strings.
 
-    Returns None
+    keybind
+    A string denoting the keybind pressed.
+
+    hex_codes
+    A list of the hex codes of the open Minecraft instances.
+
+    pids
+    A dictionary of process IDs of the open Minecraft instances.
+
+    Returns the hex code of the instance that was switched to for logging purposes.
 
     """
     instance_number = instance_keybinds.index(keybind)
@@ -58,9 +63,16 @@ def instance_switch_macro(instance_keybinds, keybind, hex_codes):
         ["xdotool", "getactivewindow"]
     ).decode("UTF-8")
     current_hex_code = hex(int(current_hex_code_in_base_ten))
-    os.system("wmctrl -i -a " + current_hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + current_hex_code + " Escape")
+    if len(current_hex_code.split("x")[1]) == 7:
+        current_hex_code = (
+            current_hex_code.split("x")[0] + "x0" + current_hex_code.split("x")[1]
+        )
+    for hex_code in hex_codes:
+        if hex_code != current_hex_code and hex_code != target_hex_code:
+            os.system("kill -STOP " + pids[hex_code])
+    os.system("kill -CONT " + pids[target_hex_code])
     os.system("wmctrl -i -a " + target_hex_code)
     time.sleep(0.25)
     os.system("xdotool key --window " + target_hex_code + " Escape")
+
+    return target_hex_code

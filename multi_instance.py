@@ -35,18 +35,22 @@ https://github.com/sathya-pramodh/MultiInstanceLinux/
 # SOFTWARE.
 
 # Imports
+import os
+import time
 import keyboard
 import macro_handlers.instance_handlers as switch_macro
 import macro_handlers.reset_handlers as reset_macro
+import macro_handlers.suspend_handlers as suspend_macro
 import config
 import subprocess
+from helper_scripts.logging import Logging
 
 
 def get_hex_codes():
     """
-    Gets the hex codes of the open Minecraft instances by executing the command "wmctrl -l".
+    Gets the hex codes of the open Minecraft instances.
 
-    Returns the list of hex codes.
+    Returns the list of hex codes
     """
     processes = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
     hex_codes = []
@@ -57,35 +61,72 @@ def get_hex_codes():
     return hex_codes
 
 
-def handle_instance_keybinds(hex_codes):
+def get_process_ids(hex_codes):
+    """
+    Gets the process IDs of the open Minecraft instances.
+
+    Returns the list of the process IDs
+    """
+    pids = {}
+    for hex_code in hex_codes:
+        pid = (
+            subprocess.check_output(["xdotool", "getwindowpid", hex_code])
+            .decode("UTF-8")
+            .strip()
+        )
+        pids[hex_code] = pid
+
+    return pids
+
+
+def handle_instance_keybinds(hex_codes, pids):
     """
     Handles the instance keybinds defined in config.py.
 
     hex_codes
-        A list of the corresponding hex codes of the open instances.
+    A list of the corresponding hex codes of the open instances.
+
+    pids
+    A dictionary of the pids of the open instances.
 
     Returns None
     """
     instance_keybinds = config.SWITCH_INSTANCES
     reset_all_keybinds = config.RESET_ALL_INSTANCES
     reset_one_keybinds = config.RESET_CURRENT_INSTANCE
+    suspend_all_keybinds = config.SUSPEND_ALL_INSTANCES
+    unsuspend_all_keybinds = config.UNSUSPEND_ALL_INSTANCES
     while True:
         for instance_keybind in instance_keybinds:
             if keyboard.is_pressed(instance_keybind):
-                switch_macro.instance_switch_macro(
-                    instance_keybinds, instance_keybind, hex_codes
+                hex_code = switch_macro.instance_switch_macro(
+                    instance_keybinds, instance_keybind, hex_codes, pids
                 )
-                print("Debug Info: Switched to respective instance.")
+                logger.log("Switched to instance with hex code: {}".format(hex_code))
 
         for reset_all_keybind in reset_all_keybinds:
             if keyboard.is_pressed(reset_all_keybind):
-                reset_macro.reset_all_macro(hex_codes)
-                print("Debug Info: All instances reset.")
+                reset_macro.reset_all_macro(hex_codes, pids)
+                logger.log("All instances were reset.")
 
         for reset_one_keybind in reset_one_keybinds:
             if keyboard.is_pressed(reset_one_keybind):
-                reset_macro.reset_current_macro()
-                print("Debug Info: Instance was reset.")
+                hex_code = reset_macro.reset_current_macro()
+                logger.log("Instance with hex code: {} was reset.".format(hex_code))
+
+        for suspend_all_keybind in suspend_all_keybinds:
+            if keyboard.is_pressed(suspend_all_keybind):
+                hex_code = suspend_macro.suspend_all_macro(pids)
+                logger.log(
+                    "All instances other than the instance with hex code: {} were suspended.".format(
+                        hex_code
+                    )
+                )
+
+        for unsuspend_all_keybind in unsuspend_all_keybinds:
+            if keyboard.is_pressed(unsuspend_all_keybind):
+                suspend_macro.unsuspend_all_macro(pids)
+                logger.log("All instances were unsuspended.")
 
 
 def main():
@@ -96,31 +137,57 @@ def main():
     """
     try:
         if config.NUM_INSTANCES > 9 or config.NUM_INSTANCES < 2:
-            print(
-                "The number of instances should be greater than 1 and lesser than 9. Please make necessary changes to the config file."
+            logger.log(
+                "The number of instances should be greater than 1 and lesser than 9. Detected number of instances: {}".format(
+                    config.NUM_INSTANCES
+                )
             )
             return -1
 
         hex_codes = get_hex_codes()
-        print("Debug Info: Hex codes of the windows obtained.")
+        logger.log("Hex codes of the windows obtained. Hex Codes: {}".format(hex_codes))
+        pids = get_process_ids(hex_codes)
+        logger.log("PIDs of the windows obtained. PIDs: {}".format(pids))
 
         if len(hex_codes) != config.NUM_INSTANCES:
-            print(
-                "Some instances are not open. Please check if your instances are open."
+            logger.log(
+                "Some instances are not open. Number of instances detected: {}".format(
+                    len(hex_codes)
+                )
             )
             return -1
 
-        handle_instance_keybinds(hex_codes)
+        handle_instance_keybinds(hex_codes, pids)
     except KeyboardInterrupt:
         return 0
 
 
 # Checking if the script has been imported from an external script.
 if __name__ == "__main__":
+    script_start_time = time.time()
+    WORKING_DIRECTORY = os.getcwd()
+    if not os.path.isdir("{}/log/".format(WORKING_DIRECTORY)):
+        os.mkdir("{}/log/".format(WORKING_DIRECTORY))
+    logger = Logging("{}/log/".format(WORKING_DIRECTORY))
     return_code = main()
 
-    # Printing proper debug info based on the return code.
     if return_code == 0:
-        print("Debug Info: Script exitted successfully.")
-    elif return_code == -1:
-        print("Debug Info: Error occured in script. Exitting...")
+        script_end_time = time.time()
+        time_taken_by_script = script_end_time - script_start_time
+        logger.log(
+            "Script exitted successfully. Exitted with code 0. Time taken for execution: {} seconds".format(
+                time_taken_by_script
+            )
+        )
+
+    if return_code == -1:
+        script_end_time = time.time()
+        time_taken_by_script = script_end_time - script_start_time
+        logger.log(
+            "Script exitted with an error. Exitted with code -1. Time take for execution: {} seconds".format(
+                time_taken_by_script
+            )
+        )
+        print(
+            "Some error occurred in the script. Please check the log files for more information. Exit code(-1)."
+        )

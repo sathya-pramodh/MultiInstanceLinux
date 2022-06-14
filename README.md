@@ -83,10 +83,18 @@ sudo python3 multi_instance.py
 ```
 ## Some important instructions
 - This macro also assumes that you are using Atum and FastReset mods for Minecraft 1.16.1. It is hardcoded assuming so.
+- Log files are located in the 'log' directory in the project script's main folder. So issues must be submitted with the relevant log files attached to them.
+- The 'testing' branch is meant only for testing purposes and releases from that branch are created with the '-testing' tag at the end of them.
+
+# Contribution
+- Code contributions can be made to the testing branch. Pull requests must be made with proper comments and documentation.
+- The code must follow all PEP8 conventions and must be in python3.x ONLY.
 
 # Default Keybinds
 - `Ctrl+R` - Reset all instances (RSG)
 - `Shift+R` - Reset the current instance (RSG)
+- `Ctrl+S` - Suspend all instances other than the active one.
+- `Alt+S` - Unsuspend all instances.
 - `Ctrl+1` - Switch to Instance 1
 - `Ctrl+2` - Switch to Instance 2
 - `Ctrl+3` - Switch to Instance 3
@@ -105,3 +113,5 @@ sudo python3 multi_instance.py
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
 - RESET_CURRENT_INSTANCE - The list of keybinds to reset the current instance.
+- SUSPEND_ALL_INSTANCES - The list of keybinds for suspending instances other than the active instance.
+- UNSUSPEND_ALL_INSTANCES - The list of keybinds for un-suspending all instances.

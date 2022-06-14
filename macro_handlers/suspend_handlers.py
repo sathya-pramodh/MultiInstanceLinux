@@ -1,6 +1,6 @@
 """
-This is a helper script that handles the reset keybinds.
-Called from handle_instance_keybinds in multi_instance.py
+This is a helper script that handles the suspend keybinds.
+Called from handle_instance_keybinds() in multi_instance.py
 """
 # Author: sathya-pramodh
 # Github: https://github.com/sathya-pramodh
@@ -28,58 +28,42 @@ Called from handle_instance_keybinds in multi_instance.py
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-# Imports
-import subprocess
-import time
 import os
+import subprocess
 
 
-def reset_all_macro(hex_codes, pids):
+def suspend_all_macro(pids):
     """
-    Handles the resetting macro on all instances.
-    It is hardcoded for Minecraft 1.16.1.
-
-    hex_codes
-    A list of the hex codes of the open Minecraft Instances.
+    The function that handles suspending all instances other than the current active instance.
 
     pids
-    A list of PIDs of all the open instances.
+    A list of the PIDs of all the open instances.
 
-    Returns None
+    Returns the hex code of the current active instance for logging purposes.
     """
-    macro = " Tab+" * 8 + "Enter"
-    for pid in pids.values():
-        os.system("kill -CONT " + pid)
     current_hex_code_in_base_ten = subprocess.check_output(
         ["xdotool", "getwindowfocus"]
     ).decode("UTF-8")
     current_hex_code = hex(int(current_hex_code_in_base_ten))
-    os.system("wmctrl -i -a " + current_hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + current_hex_code + " Escape")
-    os.system("xdotool key --window " + current_hex_code + macro)
-    for hex_code in hex_codes:
+    if len(current_hex_code.split("x")[1]) == 7:
+        current_hex_code = (
+            current_hex_code.split("x")[0] + "x0" + current_hex_code.split("x")[1]
+        )
+    for hex_code, pid in pids.items():
         if hex_code != current_hex_code:
-            os.system("wmctrl -i -a " + hex_code)
-            time.sleep(0.25)
-            os.system("xdotool key --window " + hex_code + macro)
+            os.system("kill -STOP " + pid)
+
+    return current_hex_code
 
 
-def reset_current_macro():
+def unsuspend_all_macro(pids):
     """
-    Handles the reset instance macro for the current window in focus.
-    It is hardcoded for Minecraft 1.16.1.
+    The function that handles unsuspending all instances other than the current active instance.
 
-    Returns the hex code of the instance that was reset for logging purposes
+    pids
+    A list of PIDs of all the open instances.
+
+    Returns the hex code of the current active instance for logging purposes.
     """
-    macro = " Tab+" * 8 + "Enter"
-    hex_code_in_base_ten = subprocess.check_output(
-        ["xdotool", "getactivewindow"]
-    ).decode("UTF-8")
-    hex_code = hex(int(hex_code_in_base_ten))
-    os.system("wmctrl -i -a " + hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + hex_code + " Escape")
-    os.system("xdotool key --window " + hex_code + macro)
-    return hex_code
+    for hex_code, pid in pids.items():
+        os.system("kill -CONT " + pid)

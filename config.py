@@ -35,3 +35,15 @@ RESET_ALL_INSTANCES = ["ctrl+r"]
 # Note: Do not use 'alt' instead of 'shift' here because the macro contains 'Tab' as a part of it and 'alt+tab' is already a keybind in most desktop environments.
 # The default is ["shift+r"]
 RESET_CURRENT_INSTANCE = ["shift+r"]
+
+# The list of keybinds for suspending instances other than the active instance.
+# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
+# The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
+# The default is ["ctrl+s"]
+SUSPEND_ALL_INSTANCES = ["ctrl+s"]
+
+# The list of keybinds for un-suspending all instances.
+# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
+# The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
+# The default is ["alt+s"]
+UNSUSPEND_ALL_INSTANCES = ["alt+s"]
