@@ -36,7 +36,7 @@ WALL_SCENE_NAME = "Verification"
 SWITCH_TO_WALL = ["ctrl+o"]
 
 # This is a performance option.
-# Allowed values are "A","N" and "".
+# Allowed values are "F","N" and "".
 # "F" - Auto suspend on switching instances.
 # "N" and "" - Do not use any performance optimization.
 # The default is "N".
