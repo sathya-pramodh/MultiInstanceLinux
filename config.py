@@ -21,7 +21,7 @@ WEBSOCKET_PORT = 4444
 # DO NOT SHARE THIS PASSWORD WITH ANYONE!
 # The password should be given as a string ONLY.
 # Ex: WEBSOCKET_PASSWORD = "password"
-# It is highly recommended that you change this password in OBS.
+# It is highly recommended that you change this password from default in OBS.
 # The default is "changeme".
 WEBSOCKET_PASSWORD = "changeme"
 
@@ -29,11 +29,28 @@ WEBSOCKET_PASSWORD = "changeme"
 # Should be given as a string ONLY.
 # The default is "Verification".
 WALL_SCENE_NAME = "Verification"
+
 # The list of keybinds to switch to the wall, i.e, switch to OBS on the 'WALL_SCENE_NAME' scene.
 # Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
 # The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
 # The default is ["ctrl+o"]
 SWITCH_TO_WALL = ["ctrl+o"]
+
+# The list of names of the scenes (in order of instance number).
+# Be very careful while listing these names.
+# They must perfectly match the scene names on OBS.
+# The default is ["Instance 1", "Instance 2", "Instance 3", "Instance 4", "Instance 5", "Instance 6", "Instance 7", "Instance 8", "Instance 9"]
+INSTANCE_SCENE_NAMES = [
+    "Instance 1",
+    "Instance 2",
+    "Instance 3",
+    "Instance 4",
+    "Instance 5",
+    "Instance 6",
+    "Instance 7",
+    "Instance 8",
+    "Instance 9",
+]
 
 # This is a performance option.
 # Allowed values are "F","N" and "".

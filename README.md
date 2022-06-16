@@ -118,7 +118,7 @@ sudo python3 multi_instance.py
 - `Shift+R` - Reset the current instance (RSG)
 - `Ctrl+S` - Suspend all instances other than the active one.
 - `Alt+S` - Unsuspend all instances.
-- `Ctrl+O` - Switch to the wall scene on OBS (Only while using wall).
+- `Ctrl+o` - Switch to the wall scene on OBS (Only while using wall).
 - `Ctrl+1` - Switch to Instance 1
 - `Ctrl+2` - Switch to Instance 2
 - `Ctrl+3` - Switch to Instance 3
@@ -148,6 +148,7 @@ sudo python3 multi_instance.py
 - WEBSOCKET_PASSWORD - The password that is set to connect to the websocket server.
 - WALL_SCENE_NAME - The name of the wall scene on OBS.
 - SWITCH_TO_WALL - The list of keybinds to switch to the wall scene on OBS.
+- INSTANCE_SCENE_NAMES - The list of scene names (in order of instance number) on OBS.
 - PERFORMANCE_MODE - The performance enhancement option while multi instancing.
 - NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.

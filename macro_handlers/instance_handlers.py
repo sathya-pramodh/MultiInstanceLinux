@@ -1,6 +1,5 @@
 """
 This is a helper script that handles the instance keybinds.
-Called from handle_instance_keybinds() in multi_instance.py
 """
 
 # Author: sathya-pramodh
@@ -56,8 +55,7 @@ def instance_switch_macro(
     pids
     A dictionary of process IDs of the open Minecraft instances.
 
-    Returns the hex code of the instance that was switched to for logging purposes.
-
+    Returns the hex code and the instance number of the instance that was switched to for logging purposes.
     """
     instance_number = instance_keybinds.index(keybind)
     target_hex_code = hex_codes[instance_number]
@@ -79,7 +77,7 @@ def instance_switch_macro(
     time.sleep(0.25)
     os.system("xdotool key --window " + target_hex_code + " Escape")
 
-    return target_hex_code
+    return target_hex_code, instance_number
 
 
 def instance_reset_macro(instance_reset_keybinds, keybind, hex_codes, pids):
@@ -97,6 +95,8 @@ def instance_reset_macro(instance_reset_keybinds, keybind, hex_codes, pids):
 
     pids
     A dictionary of process IDs of the Minecraft instances.
+
+    Returns the hex code of the instance reset for loggging purposes
     """
     instance_number = instance_reset_keybinds.index(keybind)
     target_hex_code = hex_codes[instance_number]

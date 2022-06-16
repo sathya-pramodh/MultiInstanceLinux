@@ -1,6 +1,5 @@
 """
 This is a helper script that handles the reset keybinds.
-Called from handle_instance_keybinds in multi_instance.py
 """
 # Author: sathya-pramodh
 # Github: https://github.com/sathya-pramodh
