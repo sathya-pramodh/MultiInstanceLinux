@@ -38,7 +38,9 @@ import os
 import subprocess
 
 
-def instance_switch_macro(instance_keybinds, keybind, hex_codes, pids):
+def instance_switch_macro(
+    instance_keybinds, keybind, hex_codes, pids, performance_mode
+):
     """
     Handles the switch instances macro.
 
@@ -59,20 +61,53 @@ def instance_switch_macro(instance_keybinds, keybind, hex_codes, pids):
     """
     instance_number = instance_keybinds.index(keybind)
     target_hex_code = hex_codes[instance_number]
-    current_hex_code_in_base_ten = subprocess.check_output(
-        ["xdotool", "getactivewindow"]
-    ).decode("UTF-8")
-    current_hex_code = hex(int(current_hex_code_in_base_ten))
-    if len(current_hex_code.split("x")[1]) == 7:
-        current_hex_code = (
-            current_hex_code.split("x")[0] + "x0" + current_hex_code.split("x")[1]
-        )
-    for hex_code in hex_codes:
-        if hex_code != current_hex_code and hex_code != target_hex_code:
-            os.system("kill -STOP " + pids[hex_code])
-    os.system("kill -CONT " + pids[target_hex_code])
+
+    if performance_mode == "F":
+        current_hex_code_in_base_ten = subprocess.check_output(
+            ["xdotool", "getactivewindow"]
+        ).decode("UTF-8")
+        current_hex_code = hex(int(current_hex_code_in_base_ten))
+        if len(current_hex_code.split("x")[1]) == 7:
+            current_hex_code = (
+                current_hex_code.split("x")[0] + "x0" + current_hex_code.split("x")[1]
+            )
+        for hex_code in hex_codes:
+            if hex_code != current_hex_code and hex_code != target_hex_code:
+                os.system("kill -STOP " + pids[hex_code])
+        os.system("kill -CONT " + pids[target_hex_code])
     os.system("wmctrl -i -a " + target_hex_code)
     time.sleep(0.25)
     os.system("xdotool key --window " + target_hex_code + " Escape")
 
+    return target_hex_code
+
+
+def instance_reset_macro(instance_reset_keybinds, keybind, hex_codes, pids):
+    """
+    Handles the macro for resetting all other instances and switching to an instance.
+
+    instance_reset_keybinds
+    A list of keybinds as strings.
+
+    keybind
+    A string denoting the keybind pressed.
+
+    hex_codes
+    A list of the hex codes of the open Minecraft instances.
+
+    pids
+    A dictionary of process IDs of the Minecraft instances.
+    """
+    instance_number = instance_reset_keybinds.index(keybind)
+    target_hex_code = hex_codes[instance_number]
+    macro = " shift+Tab"
+    for hex_code in hex_codes:
+        if hex_code != target_hex_code:
+            os.system("kill -CONT " + pids[hex_code])
+            os.system("wmctrl -i -a " + hex_code)
+            time.sleep(0.25)
+            os.system("xdotool key --window " + hex_code + macro)
+            os.system("xdotool key --window " + hex_code + " Enter")
+
+    os.system("wmctrl -i -a " + target_hex_code)
     return target_hex_code

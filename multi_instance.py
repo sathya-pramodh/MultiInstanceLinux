@@ -41,6 +41,7 @@ import keyboard
 import macro_handlers.instance_handlers as switch_macro
 import macro_handlers.reset_handlers as reset_macro
 import macro_handlers.suspend_handlers as suspend_macro
+import macro_handlers.wall_handlers as wall_macro
 import config
 import subprocess
 from helper_scripts.logging import Logging
@@ -96,11 +97,18 @@ def handle_instance_keybinds(hex_codes, pids):
     reset_one_keybinds = config.RESET_CURRENT_INSTANCE
     suspend_all_keybinds = config.SUSPEND_ALL_INSTANCES
     unsuspend_all_keybinds = config.UNSUSPEND_ALL_INSTANCES
+    instance_reset_keybinds = config.SWITCH_AND_RESET_INSTANCES
+    performance_mode = config.PERFORMANCE_MODE
+    using_wall = (
+        config.USING_WALL
+        if config.USING_WALL is True or config.USING_WALL is False
+        else True
+    )
     while True:
         for instance_keybind in instance_keybinds:
             if keyboard.is_pressed(instance_keybind):
                 hex_code = switch_macro.instance_switch_macro(
-                    instance_keybinds, instance_keybind, hex_codes, pids
+                    instance_keybinds, instance_keybind, hex_codes, pids, performance_mode
                 )
                 logger.log("Switched to instance with hex code: {}".format(hex_code))
 
@@ -127,6 +135,52 @@ def handle_instance_keybinds(hex_codes, pids):
             if keyboard.is_pressed(unsuspend_all_keybind):
                 suspend_macro.unsuspend_all_macro(pids)
                 logger.log("All instances were unsuspended.")
+
+        for instance_reset_keybind in instance_reset_keybinds:
+            if keyboard.is_pressed(instance_reset_keybind):
+                hex_code = switch_macro.instance_reset_macro(
+                    instance_reset_keybinds, instance_reset_keybind, hex_codes, pids
+                )
+                logger.log(
+                    "All instances other than the instance with hex code: {} were reset".format(
+                        hex_code
+                    )
+                )
+
+        if using_wall:
+            switch_to_wall_keybinds = config.SWITCH_TO_WALL
+            for switch_to_wall_keybind in switch_to_wall_keybinds:
+                if keyboard.is_pressed(switch_to_wall_keybind):
+                    processes = (
+                        subprocess.check_output(["wmctrl", "-l"])
+                        .decode("UTF-8")
+                        .split("\n")
+                    )
+                    for process in processes:
+                        if process.find("OBS") != -1:
+                            obs_hex_code = process.split()[0]
+                            break
+                    else:
+                        logger.log("Could not find an open OBS studio window.")
+                        return -1
+                    return_code = wall_macro.wall_switch_macro(
+                        obs_hex_code,
+                        config.WEBSOCKET_HOST,
+                        config.WEBSOCKET_PORT,
+                        config.WEBSOCKET_PASSWORD,
+                        config.WALL_SCENE_NAME,
+                    )
+                    if return_code == -1:
+                        logger.log(
+                            "Could not find the scene '{}' in the list of scenes.".format(
+                                config.WALL_SCENE_NAME
+                            )
+                        )
+                    logger.log(
+                        "Switched to OBS Studio on scene '{}'.".format(
+                            config.WALL_SCENE_NAME
+                        )
+                    )
 
 
 def main():
@@ -157,7 +211,9 @@ def main():
             )
             return -1
 
-        handle_instance_keybinds(hex_codes, pids)
+        return_code = handle_instance_keybinds(hex_codes, pids)
+        if return_code == -1:
+            return return_code
     except KeyboardInterrupt:
         return 0
 

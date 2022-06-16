@@ -48,7 +48,7 @@ def reset_all_macro(hex_codes, pids):
 
     Returns None
     """
-    macro = " Tab+" * 8 + "Enter"
+    macro = " shift+Tab"
     for pid in pids.values():
         os.system("kill -CONT " + pid)
     current_hex_code_in_base_ten = subprocess.check_output(
@@ -59,11 +59,13 @@ def reset_all_macro(hex_codes, pids):
     time.sleep(0.25)
     os.system("xdotool key --window " + current_hex_code + " Escape")
     os.system("xdotool key --window " + current_hex_code + macro)
+    os.system("xdotool key --window " + current_hex_code + " Enter")
     for hex_code in hex_codes:
         if hex_code != current_hex_code:
             os.system("wmctrl -i -a " + hex_code)
             time.sleep(0.25)
             os.system("xdotool key --window " + hex_code + macro)
+            os.system("xdotool key --window " + hex_code + " Enter")
 
 
 def reset_current_macro():
@@ -73,7 +75,7 @@ def reset_current_macro():
 
     Returns the hex code of the instance that was reset for logging purposes
     """
-    macro = " Tab+" * 8 + "Enter"
+    macro = " shift+Tab"
     hex_code_in_base_ten = subprocess.check_output(
         ["xdotool", "getactivewindow"]
     ).decode("UTF-8")
@@ -82,4 +84,5 @@ def reset_current_macro():
     time.sleep(0.25)
     os.system("xdotool key --window " + hex_code + " Escape")
     os.system("xdotool key --window " + hex_code + macro)
+    os.system("xdotool key --window " + hex_code + " Enter")
     return hex_code
