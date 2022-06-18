@@ -82,14 +82,17 @@ def get_process_ids(hex_codes):
 
 def get_obs_hex_code():
     """
-    Gets the hex code of the open OBS studio window.
+    Gets the hex code of the open OBS studio window(including the spotlight window).
 
     Returns the hex code as a string if the window is open, else None.
     """
     processes = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
     for process in processes:
-        if process.find("OBS") != -1:
+        if process.find("OBS") != -1 and not config.USING_PROJECTOR:
             return process.split()[0]
+        if process.find("Fullscreen Projector") != -1 and config.USING_PROJECTOR:
+            return process.split()[0]
+
     else:
         return None
 
@@ -159,17 +162,21 @@ def handle_reset_keybinds(reset_all_keybinds, reset_one_keybinds, hex_codes, pid
     pids
     The dictionary of the process IDs of the open Minecraft instances.
 
-    Returns None
+    Returns True if any instance was reset, else False.
     """
     for reset_all_keybind in reset_all_keybinds:
         if keyboard.is_pressed(reset_all_keybind):
             reset_macro.reset_all_macro(hex_codes, pids)
             logger.log("All instances were reset.")
+            return True
 
     for reset_one_keybind in reset_one_keybinds:
         if keyboard.is_pressed(reset_one_keybind):
             hex_code = reset_macro.reset_current_macro()
             logger.log("Instance with hex code: {} was reset.".format(hex_code))
+            return True
+
+    return False
 
 
 def handle_suspend_keybinds(suspend_all_keybinds, pids):
@@ -214,6 +221,7 @@ def handle_unsuspend_keybinds(unsuspend_all_keybinds, pids):
 
 def handle_wall_keybinds(
     switched_to_instance_without_resetting,
+    has_reset,
     instance_number,
     obs_hex_code,
     host,
@@ -226,6 +234,9 @@ def handle_wall_keybinds(
 
     switched_to_instance_without_resetting
     The boolean which signifies whether the user has switched to an instance without resetting anything else.
+
+    has_reset
+    The boolean which signifies whether the user has reset one or more instances.
 
     instance_number
     The integer instance number of the instance that the user switched to. Equal to zero when the first parameter is False.
@@ -255,6 +266,7 @@ def handle_wall_keybinds(
             config.WEBSOCKET_PORT,
             config.WEBSOCKET_PASSWORD,
             instance_name,
+            switch_to_wall=False,
         )
         if return_code == -1:
             logger.log(
@@ -264,6 +276,22 @@ def handle_wall_keybinds(
             )
             return -1
         logger.log("Switched to instance and OBS on scene '{}'.".format(instance_name))
+    elif has_reset:
+        return_code = wall_macro.wall_switch_macro(
+            obs_hex_code,
+            config.WEBSOCKET_HOST,
+            config.WEBSOCKET_PORT,
+            config.WEBSOCKET_PASSWORD,
+            wall_scene_name,
+        )
+        if return_code == -1:
+            logger.log(
+                "Could not find the scene '{}' in the list of scenes.".format(
+                    wall_scene_name
+                )
+            )
+            return -1
+        logger.log("Switched to OBS studio on scene '{}'.".format(wall_scene_name))
     else:
         switch_to_wall_keybinds = config.SWITCH_TO_WALL
         for switch_to_wall_keybind in switch_to_wall_keybinds:
@@ -312,7 +340,7 @@ def handle_keybinds(hex_codes, obs_hex_code, pids):
             pids,
             config.PERFORMANCE_MODE,
         )
-        handle_reset_keybinds(
+        has_reset = handle_reset_keybinds(
             config.RESET_ALL_INSTANCES, config.RESET_CURRENT_INSTANCE, hex_codes, pids
         )
         handle_suspend_keybinds(config.SUSPEND_ALL_INSTANCES, pids)
@@ -321,6 +349,7 @@ def handle_keybinds(hex_codes, obs_hex_code, pids):
         if using_wall:
             return_code = handle_wall_keybinds(
                 switched_to_instance_without_resetting,
+                has_reset,
                 instance_number,
                 obs_hex_code,
                 config.WEBSOCKET_HOST,

@@ -7,6 +7,12 @@ This is the config file for MultiInstanceLinux.
 # The default is False.
 USING_WALL = False
 
+# Make this False if you do not want to use a Fullscreen Projector on the WALL_SCENE_NAME scene.
+# Make sure to open the projector window before starting up the script.
+# Because it obtains the hex code of that window during startup.
+# The default is True.
+USING_PROJECTOR = True
+
 # The hostname of the websocket server.
 # Should be given as a string ONLY.
 # The default is "localhost".

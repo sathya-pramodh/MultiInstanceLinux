@@ -1,6 +1,13 @@
 # MultiInstanceLinux
 Multi Instance Macro Handler for Minecraft on Linux.
 
+# Features
+- 1.16.1 RSG support.
+- Wall support.
+- OBS integration for Wall Resetting.
+- Full keyboard support.
+- An "almost" drop-in repleacement on Linux for Specnr's macro designed for Windows(https://github.com/Specnr/MultiResetWall)
+
 # Dependencies
 - keyboard (https://github.com/boppreh/keyboard)
 - wmctrl (https://github.com/dancor/wmctrl)
@@ -12,17 +19,17 @@ Multi Instance Macro Handler for Minecraft on Linux.
 
 # Installation
 ## pip
-- Debian/Debian-based distros (Ubuntu, Pop!_OS, Linux Mint, Zorin OS, etc)
+- Debian/Debian-based distros 
 ```
 sudo apt update
 sudo apt install python-pip
 ```
-- Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
+- Arch/Arch-based distros 
 ```
 sudo pacman -Sy
 sudo pacman -S python-pip
 ```
-- RHEL/RHEL-based distros (Fedora)
+- RHEL/RHEL-based distros 
 ```
 sudo dnf upgrade
 sudo dnf install python-pip
@@ -32,33 +39,33 @@ sudo dnf install python-pip
 sudo pip install keyboard
 ```
 ### wmctrl
-- Debian/Debian-based distros (Ubuntu, Pop!_OS, Linux Mint, Zorin OS, etc)
+- Debian/Debian-based distros 
 ```
 sudo apt update
 sudo apt install wmctrl
 ```
-- Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
+- Arch/Arch-based distros 
 ```
 sudo pacman -Sy
 sudo pacman -S wmctrl
 ```
-- RHEL/RHEL-based distros (Fedora)
+- RHEL/RHEL-based distros 
 ```
 sudo dnf upgrade
 sudo dnf intall wmctrl
 ```
 ### xdotool
-- Debian/Debian-based distros (Ubuntu, Pop!_OS, Linux Mint, Zorin OS, etc)
+- Debian/Debian-based distros 
 ```
 sudo apt update
 sudo apt install xdotool
 ```
-- Arch/Arch-based distros (Manjaro, Garuda, Arco, etc)
+- Arch/Arch-based distros
 ```
 sudo pacman -Sy
 sudo pacman -S xdotool
 ```
-- RHEL/RHEL-based distros (Fedora)
+- RHEL/RHEL-based distros
 ```
 sudo dnf upgrade
 sudo dnf install xdotool
@@ -74,15 +81,19 @@ sudo pip install obs-websocket-py
 ### OBS websocket plugin
 - Download this if and only if you plan on using wall.
 - No need to download this if you are using OBS Studio > 28.0.0
-- Binaries for OBS Studio < 28.0.0 on Linux are available at https://github.com/obsproject/obs-websocket/releases
-- For the flatpak version of OBS Studio, use the command below.
-- Note: The script was tested on the flatpak version of OBS.
-- As we all know OBS is janky on Linux, it is highly advised that you use the flatpak version of OBS as well.
-- If any issues while using other versions of OBS, you can always post them in the issues tab and I will try my very best to correct them :)
-
+- Binaries for OBS Studio < 28.0.0 on Debian/Debian-based distros are available at https://github.com/obsproject/obs-websocket/releases
+- flatpak
 ```
 flatpak install com.obsproject.Studio.Plugin.WebSocket  
 ```
+- Arch/Arch-based distros
+```
+# Using yay - AUR helper (https://github.com/Jguer/yay)
+yay -Sy
+yay -S obs-websocket
+```
+- Note: The script was tested on 'obs-studio-tytan652' available on the AUR (Arch User Repositories).
+- Any bugs on other versions can be posted in the Issues tab.
 
 ## Download the latest release from the releases page
 
@@ -104,9 +115,12 @@ git pull origin main
 ```
 sudo python3 multi_instance.py
 ```
+
 ## Some important instructions
 - This macro also assumes that you are using Atum and FastReset mods for Minecraft 1.16.1. It is hardcoded assuming so.
-- Log files are located in the 'log' directory in the project script's main folder. So issues must be submitted with the relevant log files attached to them.
+- Use all your instances in 'windowed' mode as using it in fullscreen minimizes the Minecraft window as you switch to OBS while using wall.
+- If you do not want to use wall resetting, make sure to set the same keybinds as the macro to switch instances and to switch scenes. For example, in the default config, one would have to set `Ctrl+1` to switch to the instance named "Instance 1" in OBS.
+- Log files are located in the 'log' directory in the project script's main folder. So, issues must be submitted with the relevant log files attached to them.
 - The 'testing' branch is meant only for testing purposes and releases from that branch are created with the '-testing' tag at the end of them.
 
 # Contribution
@@ -143,6 +157,7 @@ sudo python3 multi_instance.py
 
 ## Variable Descriptions
 - USING_WALL - Option to use Wall for multi instancing.
+- USING_PROJECTOR - Option to use OBS Projector while using wall.
 - WEBSOCKET_HOST - The hostname of the websocket server.
 - WEBSOCKET_PORT - The port on the host where the server is hosted.
 - WEBSOCKET_PASSWORD - The password that is set to connect to the websocket server.
