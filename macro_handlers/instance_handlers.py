@@ -74,8 +74,6 @@ def instance_switch_macro(
                 os.system("kill -STOP " + pids[hex_code])
         os.system("kill -CONT " + pids[target_hex_code])
     os.system("wmctrl -i -a " + target_hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + target_hex_code + " Escape")
 
     return target_hex_code, instance_number
 
@@ -106,6 +104,7 @@ def instance_reset_macro(instance_reset_keybinds, keybind, hex_codes, pids):
             os.system("kill -CONT " + pids[hex_code])
             os.system("wmctrl -i -a " + hex_code)
             time.sleep(0.25)
+            os.system("xdotool key --window " + hex_code + " Escape")
             os.system("xdotool key --window " + hex_code + macro)
             os.system("xdotool key --window " + hex_code + " Enter")
 

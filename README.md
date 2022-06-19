@@ -6,35 +6,20 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - Wall support.
 - OBS integration for Wall Resetting.
 - Full keyboard support.
-- An "almost" drop-in repleacement on Linux for Specnr's macro designed for Windows(https://github.com/Specnr/MultiResetWall)
+- An "almost" drop-in repleacement on Linux for [Specnr's macro designed for Windows](https://github.com/Specnr/MultiResetWall)
 
 # Dependencies
-- keyboard (https://github.com/boppreh/keyboard)
-- wmctrl (https://github.com/dancor/wmctrl)
-- xdotool (https://github.com/jordansissel/xdotool)
-- Atum (https://github.com/VoidXWalker/Atum)
-- FastReset (https://github.com/jan-leila/FastReset/tree/1.16.1-1.4.1)
-- obs-websocket-py (https://github.com/Elektordi/obs-websocket-py)
-- OBS websocket plugin (https://github.com/obsproject/obs-websocket)
+- [keyboard](https://github.com/boppreh/keyboard)
+- [wmctrl](https://github.com/dancor/wmctrl)
+- [xdotool](https://github.com/jordansissel/xdotool)
+- [Atum](https://github.com/VoidXWalker/Atum)
+- [FastReset](https://github.com/jan-leila/FastReset/tree/1.16.1-1.4.1)
+- [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py)
+- [OBS websocket plugin](https://github.com/obsproject/obs-websocket)
 
 # Installation
-## pip
-- Debian/Debian-based distros 
-```
-sudo apt update
-sudo apt install python-pip
-```
-- Arch/Arch-based distros 
-```
-sudo pacman -Sy
-sudo pacman -S python-pip
-```
-- RHEL/RHEL-based distros 
-```
-sudo dnf upgrade
-sudo dnf install python-pip
-```
 ### keyboard
+- Install pip on your system first to install this dependency.
 ```
 sudo pip install keyboard
 ```
@@ -81,19 +66,18 @@ sudo pip install obs-websocket-py
 ### OBS websocket plugin
 - Download this if and only if you plan on using wall.
 - No need to download this if you are using OBS Studio > 28.0.0
-- Binaries for OBS Studio < 28.0.0 on Debian/Debian-based distros are available at https://github.com/obsproject/obs-websocket/releases
+- Binaries for OBS Studio < 28.0.0 on Debian/Debian-based distros are available in the [releases](https://github.com/obsproject/obs-websocket/releases) tab of the websocket repository.
 - flatpak
 ```
 flatpak install com.obsproject.Studio.Plugin.WebSocket  
 ```
-- Arch/Arch-based distros
+- Arch/Arch-based distros - Using [yay](https://github.com/Jguer/yay)
 ```
-# Using yay - AUR helper (https://github.com/Jguer/yay)
 yay -Sy
 yay -S obs-websocket
 ```
 - Note: The script was tested on 'obs-studio-tytan652' available on the AUR (Arch User Repositories).
-- Any bugs on other versions can be posted in the Issues tab.
+- Any bugs on other versions can be posted in the [Issues](https://github.com/sathya-pramodh/MultiInstanceLinux/issues) tab.
 
 ## Download the latest release from the releases page
 

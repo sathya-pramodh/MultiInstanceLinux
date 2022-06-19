@@ -50,21 +50,12 @@ def reset_all_macro(hex_codes, pids):
     macro = " shift+Tab"
     for pid in pids.values():
         os.system("kill -CONT " + pid)
-    current_hex_code_in_base_ten = subprocess.check_output(
-        ["xdotool", "getwindowfocus"]
-    ).decode("UTF-8")
-    current_hex_code = hex(int(current_hex_code_in_base_ten))
-    os.system("wmctrl -i -a " + current_hex_code)
-    time.sleep(0.25)
-    os.system("xdotool key --window " + current_hex_code + " Escape")
-    os.system("xdotool key --window " + current_hex_code + macro)
-    os.system("xdotool key --window " + current_hex_code + " Enter")
     for hex_code in hex_codes:
-        if hex_code != current_hex_code:
-            os.system("wmctrl -i -a " + hex_code)
-            time.sleep(0.25)
-            os.system("xdotool key --window " + hex_code + macro)
-            os.system("xdotool key --window " + hex_code + " Enter")
+        os.system("wmctrl -i -a " + hex_code)
+        time.sleep(0.25)
+        os.system("xdotool key --window " + hex_code + " Escape")
+        os.system("xdotool key --window " + hex_code + macro)
+        os.system("xdotool key --window " + hex_code + " Enter")
 
 
 def reset_current_macro():

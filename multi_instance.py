@@ -368,13 +368,13 @@ def main():
     Returns 0 if the script was executed successfully else -1 for any configuration error.
     """
     try:
-        if config.NUM_INSTANCES > 9 or config.NUM_INSTANCES < 2:
-            logger.log(
-                "The number of instances should be greater than 1 and lesser than 9. Detected number of instances: {}".format(
-                    config.NUM_INSTANCES
-                )
-            )
-            return -1
+        # if config.NUM_INSTANCES > 9 or config.NUM_INSTANCES < 2:
+        # logger.log(
+        # "The number of instances should be greater than 1 and lesser than 9. Detected number of instances: {}".format(
+        # config.NUM_INSTANCES
+        # )
+        # )
+        # return -1
 
         hex_codes = get_hex_codes()
         logger.log("Hex codes of the windows obtained. Hex Codes: {}".format(hex_codes))
@@ -383,13 +383,13 @@ def main():
         obs_hex_code = get_obs_hex_code()
         logger.log("Hex code of OBS window obtained. Hex Code: {}".format(obs_hex_code))
 
-        if len(hex_codes) != config.NUM_INSTANCES:
-            logger.log(
-                "Some instances are not open. Number of instances detected: {}".format(
-                    len(hex_codes)
-                )
-            )
-            return -1
+        # if len(hex_codes) != config.NUM_INSTANCES:
+        # logger.log(
+        # "Some instances are not open. Number of instances detected: {}".format(
+        # len(hex_codes)
+        # )
+        # )
+        # return -1
 
         return_code = handle_keybinds(hex_codes, obs_hex_code, pids)
         if return_code == -1:

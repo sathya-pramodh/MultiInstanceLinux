@@ -5,13 +5,13 @@ This is the config file for MultiInstanceLinux.
 # Also make sure that obs websocket is installed when you make this True.
 # Allowed values are True, False.
 # The default is False.
-USING_WALL = False
+USING_WALL = True
 
 # Make this False if you do not want to use a Fullscreen Projector on the WALL_SCENE_NAME scene.
 # Make sure to open the projector window before starting up the script.
 # Because it obtains the hex code of that window during startup.
 # The default is True.
-USING_PROJECTOR = True
+USING_PROJECTOR = False
 
 # The hostname of the websocket server.
 # Should be given as a string ONLY.
@@ -29,7 +29,7 @@ WEBSOCKET_PORT = 4444
 # Ex: WEBSOCKET_PASSWORD = "password"
 # It is highly recommended that you change this password from default in OBS.
 # The default is "changeme".
-WEBSOCKET_PASSWORD = "changeme"
+WEBSOCKET_PASSWORD = "Sathyapramodh@1231123"
 
 # The name of the wall scene on OBS.
 # Should be given as a string ONLY.
