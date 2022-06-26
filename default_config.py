@@ -1,5 +1,5 @@
 """
-This is the config file for MultiInstanceLinux.
+This is the default config file for MultiInstanceLinux.
 """
 # Make this option True if you want to use a Wall for multi instancing.
 # Also make sure that obs websocket is installed when you make this True.
@@ -29,7 +29,7 @@ WEBSOCKET_PORT = 4444
 # Ex: WEBSOCKET_PASSWORD = "password"
 # It is highly recommended that you change this password from default in OBS.
 # The default is "changeme".
-WEBSOCKET_PASSWORD = "Sathyapramodh@1231123"
+WEBSOCKET_PASSWORD = "changeme"
 
 # The name of the wall scene on OBS.
 # Should be given as a string ONLY.
