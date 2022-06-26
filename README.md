@@ -83,6 +83,11 @@ yay -S obs-websocket
 
 ## Extract the .zip or .tar.gz file and then follow the usage instructions
 
+## Make the startup script executable
+```
+chmod +x start.sh
+```
+
 ## Dev Instructions
 - Clone this repository
 ```
@@ -97,7 +102,7 @@ git pull origin main
 # Usage
 - This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
 ```
-sudo python3 multi_instance.py
+./start.sh
 ```
 
 ## Some important instructions
@@ -138,6 +143,8 @@ sudo python3 multi_instance.py
 
 # Configuration
 - All configurations can be done in config.py
+- A default config is provided and the script will rollback to it if it doesn't find the file in the working directory.
+- A new config.py will be created from the default config if a config.py doesn't exist already.
 
 ## Variable Descriptions
 - USING_WALL - Option to use Wall for multi instancing.
@@ -149,7 +156,6 @@ sudo python3 multi_instance.py
 - SWITCH_TO_WALL - The list of keybinds to switch to the wall scene on OBS.
 - INSTANCE_SCENE_NAMES - The list of scene names (in order of instance number) on OBS.
 - PERFORMANCE_MODE - The performance enhancement option while multi instancing.
-- NUM_INSTANCES - The number of instances that you want to open.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - SWITCH_AND_RESET_INSTANCES - The list of keybinds (in order of instance number) to reset all other instances and switch to an instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.

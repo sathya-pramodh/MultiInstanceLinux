@@ -1,17 +1,17 @@
 """
-This is the config file for MultiInstanceLinux.
+This is the default config file for MultiInstanceLinux.
 """
 # Make this option True if you want to use a Wall for multi instancing.
 # Also make sure that obs websocket is installed when you make this True.
 # Allowed values are True, False.
 # The default is False.
-USING_WALL = True
+USING_WALL = False
 
 # Make this False if you do not want to use a Fullscreen Projector on the WALL_SCENE_NAME scene.
 # Make sure to open the projector window before starting up the script.
 # Because it obtains the hex code of that window during startup.
 # The default is True.
-USING_PROJECTOR = False
+USING_PROJECTOR = True
 
 # The hostname of the websocket server.
 # Should be given as a string ONLY.
@@ -29,7 +29,7 @@ WEBSOCKET_PORT = 4444
 # Ex: WEBSOCKET_PASSWORD = "password"
 # It is highly recommended that you change this password from default in OBS.
 # The default is "changeme".
-WEBSOCKET_PASSWORD = "Sathyapramodh@1231123"
+WEBSOCKET_PASSWORD = "changeme"
 
 # The name of the wall scene on OBS.
 # Should be given as a string ONLY.
@@ -64,12 +64,6 @@ INSTANCE_SCENE_NAMES = [
 # "N" and "" - Do not use any performance optimization.
 # The default is "N".
 PERFORMANCE_MODE = "N"
-
-# Number of Minecraft instances that you want to run.
-# Remember: The number of open instances must match this given number, else the script will fail.
-# Allowed range of integers: 2 to 9 both inclusive.
-# The default is 2.
-NUM_INSTANCES = 2
 
 # The list of keybinds for switching instances (in order of instance number).
 # Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
