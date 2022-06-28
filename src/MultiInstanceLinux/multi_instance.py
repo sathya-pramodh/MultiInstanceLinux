@@ -37,12 +37,12 @@ https://github.com/sathya-pramodh/MultiInstanceLinux/
 # Imports
 import os
 import time
+import sys
 import keyboard
 import macro_handlers.instance_handlers as switch_macro
 import macro_handlers.reset_handlers as reset_macro
 import macro_handlers.suspend_handlers as suspend_macro
 import macro_handlers.wall_handlers as wall_macro
-import config
 import subprocess
 from helper_scripts.logging import Logging
 
@@ -329,6 +329,11 @@ def handle_keybinds(hex_codes, obs_hex_code, pids):
     Returns None if the script executed successfully, else -1 for any errors.
     """
     using_wall = config.USING_WALL
+    config.INSTANCE_SCENE_NAMES = config.INSTANCE_SCENE_NAMES[: len(hex_codes)]
+    config.SWITCH_INSTANCES = config.SWITCH_INSTANCES[: len(hex_codes)]
+    config.SWITCH_AND_RESET_INSTANCES = config.SWITCH_AND_RESET_INSTANCES[
+        : len(hex_codes)
+    ]
     while True:
         (
             switched_to_instance_without_resetting,
@@ -361,9 +366,9 @@ def handle_keybinds(hex_codes, obs_hex_code, pids):
                 return -1
 
 
-def main():
+def start():
     """
-    The main function to be called for the execution of the script.
+    The function to be called to start the macro
 
     Returns 0 if the script was executed successfully else -1 for any configuration error.
     """
@@ -384,14 +389,56 @@ def main():
         return 0
 
 
-# Checking if the script has been imported from an external script.
-if __name__ == "__main__":
+def get_config(project_root, config_dir):
+    """
+    The function to copy the default configuration file to the user's config directory.
+
+    project_root
+    The root directory of the project represented as a string.
+
+    config_dir
+    The .config directory of the user represented as a string.
+
+    Returns None.
+    """
+    config_file = project_root + "/default_config.py"
+    target_file = config_dir + "/MultiInstanceLinux/config.py"
+    os.system("cp {} {}".format(config_file, target_file))
+
+
+def main(project_root):
+    """
+    The main function to be called to startup the script.
+
+    project_root
+    The directory of the project root represented as a string.
+
+    Returns None.
+    """
     script_start_time = time.time()
-    WORKING_DIRECTORY = os.getcwd()
-    if not os.path.isdir("{}/log/".format(WORKING_DIRECTORY)):
-        os.mkdir("{}/log/".format(WORKING_DIRECTORY))
-    logger = Logging("{}/log/".format(WORKING_DIRECTORY))
-    return_code = main()
+    username = os.environ.get("SUDO_USER", os.environ.get("USERNAME"))
+    if username is None:
+        print(
+            "Not a sudo user or no sudo user has logged in. Execute the script with sudo previleges. Exitting the script..."
+        )
+        return -1
+    home = os.path.expanduser("~{}".format(username))
+    config_dir = home + "/.config"
+    log_dir = home + "/.config/MultiInstanceLinux"
+    if not os.path.isdir("{}/logs/".format(log_dir)):
+        if not os.path.isdir(log_dir):
+            os.mkdir(log_dir)
+        os.mkdir("{}/logs/".format(log_dir))
+    global logger
+    logger = Logging("{}/logs/".format(log_dir))
+    sys.path.append(log_dir)
+    if not os.path.isfile(config_dir + "/MultiInstanceLinux/config.py"):
+        get_config(project_root, config_dir)
+    global config
+    import config
+
+    os.chdir(project_root)
+    return_code = start()
 
     if return_code == 0:
         script_end_time = time.time()

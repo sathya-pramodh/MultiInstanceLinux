@@ -6,6 +6,7 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - Wall support.
 - OBS integration for Wall Resetting.
 - Full keyboard support.
+- Distributed through pip for easy installation.
 - An "almost" drop-in repleacement on Linux for [Specnr's macro designed for Windows](https://github.com/Specnr/MultiResetWall)
 
 # Dependencies
@@ -18,49 +19,21 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - [OBS websocket plugin](https://github.com/obsproject/obs-websocket)
 
 # Installation
-### keyboard
-- Install pip on your system first to install this dependency.
-```
-sudo pip install keyboard
-```
-### wmctrl
-- Debian/Debian-based distros 
+## Dependencies
+- Debian/Debian-based distros
 ```
 sudo apt update
-sudo apt install wmctrl
-```
-- Arch/Arch-based distros 
-```
-sudo pacman -Sy
-sudo pacman -S wmctrl
-```
-- RHEL/RHEL-based distros 
-```
-sudo dnf upgrade
-sudo dnf intall wmctrl
-```
-### xdotool
-- Debian/Debian-based distros 
-```
-sudo apt update
-sudo apt install xdotool
+sudo apt install wmctrl xdotool
 ```
 - Arch/Arch-based distros
 ```
 sudo pacman -Sy
-sudo pacman -S xdotool
+sudo pacman -S wmctrl xdotool
 ```
 - RHEL/RHEL-based distros
 ```
 sudo dnf upgrade
-sudo dnf install xdotool
-```
-
-### obs-websocket-py
-- Download this if and only if you plan on using wall.
-
-```
-sudo pip install obs-websocket-py
+sudo dnf install wmctrl xdotool
 ```
 
 ### OBS websocket plugin
@@ -79,30 +52,19 @@ yay -S obs-websocket
 - Note: The script was tested on 'obs-studio-tytan652' available on the AUR (Arch User Repositories).
 - Any bugs on other versions can be posted in the [Issues](https://github.com/sathya-pramodh/MultiInstanceLinux/issues) tab.
 
-## Download the latest release from the releases page
-
-## Extract the .zip or .tar.gz file and then follow the usage instructions
-
-## Make the startup script executable
+### Install the package from pip
+- Install the package distributed through pip.
+- Use sudo to install the package as pip by default installs packages in `.local/` directory which is usually not in PATH for many distros.
+- By using sudo, it installs the package in `/usr/` which is in PATH by default.
 ```
-chmod +x start.sh
-```
-
-## Dev Instructions
-- Clone this repository
-```
-git clone https://github.com/sathya-pramodh/MultiInstanceLinux
-cd MultiInstanceLinux/
-```
-- Update your local repository
-```
-git pull origin main
+sudo pip install MultiInstanceLinux
 ```
 
 # Usage
 - This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
+- It must be executed with sudo because the keyboard module requires elevated privileges to run on Linux.
 ```
-./start.sh
+sudo multiinstancelinux
 ```
 
 ## Some important instructions
@@ -142,7 +104,7 @@ git pull origin main
 - `Shift+9` - Switch to Instance 9 and reset all others.
 
 # Configuration
-- All configurations can be done in config.py
+- All configurations can be done in config.py which is located in the .config/MultiInstanceLinux/ directory of your home folder.
 - A default config is provided and the script will rollback to it if it doesn't find the file in the working directory.
 - A new config.py will be created from the default config if a config.py doesn't exist already.
 
