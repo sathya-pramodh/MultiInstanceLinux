@@ -1,2 +1,0 @@
-[console_scripts]
-multiinstancelinux = MultiInstanceLinux.__init__:main
