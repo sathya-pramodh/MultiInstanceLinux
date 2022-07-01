@@ -39,331 +39,227 @@ import os
 import time
 import sys
 import keyboard
-import macro_handlers.instance_handlers as switch_macro
-import macro_handlers.reset_handlers as reset_macro
-import macro_handlers.suspend_handlers as suspend_macro
-import macro_handlers.wall_handlers as wall_macro
+import threading
 import subprocess
-from helper_scripts.logging import Logging
+import script_setup
+from obswebsocket import obsws, requests
+from helper_modules.logging import Logging
 
 
-def get_hex_codes():
+class Instance:
     """
-    Gets the hex codes of the open Minecraft instances.
-
-    Returns the list of hex codes
+    A Class that denotes each open instance with the necessary methods.
     """
-    processes = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
-    hex_codes = []
-    for process in processes:
-        if process.find("Minecraft") != -1:
-            hex_codes.append(process.split()[0])
 
-    return hex_codes
+    def __init__(
+        self,
+        hex_code,
+        pid,
+        switch_keybind,
+        instance_directory,
+        wall_scene_name,
+    ):
+        """
+        hex_code
+        The string denoting the hex code of the instance.
 
+        pid
+        The integer denoting the pid of the instance.
 
-def get_process_ids(hex_codes):
-    """
-    Gets the process IDs of the open Minecraft instances.
+        switch_keybind
+        The string that denotes the keybind to switch to this instance.
 
-    Returns the dictionary of the process IDs
-    """
-    pids = {}
-    for hex_code in hex_codes:
-        pid = (
-            subprocess.check_output(["xdotool", "getwindowpid", hex_code])
-            .decode("UTF-8")
-            .strip()
-        )
-        pids[hex_code] = pid
+        instance_directory
+        The string that denotes the absolute path to the instance directory.
 
-    return pids
+        wall_scene_name
+        The string denoting the name of the scene while using wall.
+        """
+        self.hex_code = hex_code
+        self.pid = pid
+        self.switch_keybind = switch_keybind
+        self.instance_directory = instance_directory
+        self.wall_scene_name = wall_scene_name
 
+    def reset(self):
+        """
+        Method to reset the instance.
+        """
+        macro = "shift+Tab"
+        os.system("wmctrl -i -a {}".format(self.hex_code))
+        time.sleep(0.25)
+        os.system("xdotool key --window {} Escape".format(self.hex_code))
+        os.system("xdotool key --window {} {}".format(self.hex_code, macro))
+        os.system("xdotool key --window {} Enter".format(self.hex_code))
+        logger.log("Instance with hex code: '{}' has been reset.".format(self.hex_code))
 
-def get_obs_hex_code():
-    """
-    Gets the hex code of the open OBS studio window(including the spotlight window).
+    def switch(self):
+        """
+        Method to switch to the instance.
+        """
+        os.system("wmctrl -i -a {}".format(self.hex_code))
+        time.sleep(0.25)
+        os.system("xdotool key --window {} Escape".format(self.hex_code))
+        logger.log("Switched to instance with hex code: '{}'.".format(self.hex_code))
 
-    Returns the hex code as a string if the window is open, else None.
-    """
-    processes = subprocess.check_output(["wmctrl", "-l"]).decode("UTF-8").split("\n")
-    for process in processes:
-        if process.find("OBS") != -1 and not config.USING_PROJECTOR:
-            return process.split()[0]
-        if process.find("Fullscreen Projector") != -1 and config.USING_PROJECTOR:
-            return process.split()[0]
+    def handle_switch_keybind(self):
+        """
+        Method used by threading.Thread to handle switching to the instance.
+        """
+        while True:
+            if keyboard.is_pressed(self.switch_keybind):
+                self.switch()
 
-    else:
-        return None
-
-
-def handle_instance_keybinds(
-    instance_keybinds, instance_reset_keybinds, hex_codes, pids, performance_mode
-):
-    """
-    This is the function that handles the instance keybinds.
-
-    instance_keybinds
-    The list of keybinds to switch to a particular instance as strings.
-
-    instance_reset_keybinds
-    The list of keybinds to reset the current instance in focus as strings.
-
-    hex_codes
-    The list of hex codes of the open Minecraft instances.
-
-    pids
-    The dictionary of process IDs of the open Minecraft instances.
-
-    performance_mode
-    The string that represents the performance mode being used.
-
-    Returns True and the instance number if the user has switched to an instance without resetting the active instance,
-    else returns False and 0.
-    """
-    for instance_keybind in instance_keybinds:
-        if keyboard.is_pressed(instance_keybind):
-            hex_code, instance_number = switch_macro.instance_switch_macro(
-                instance_keybinds,
-                instance_keybind,
-                hex_codes,
-                pids,
-                performance_mode,
-            )
-            logger.log("Switched to instance with hex code: {}".format(hex_code))
-            return True, instance_number
-    for instance_reset_keybind in instance_reset_keybinds:
-        if keyboard.is_pressed(instance_reset_keybind):
-            hex_code = switch_macro.instance_reset_macro(
-                instance_reset_keybinds, instance_reset_keybind, hex_codes, pids
-            )
-            logger.log(
-                "All instances other than the instance with hex code: {} were reset.".format(
-                    hex_code
+    def pause_on_reload(self):
+        """
+        Method to pause on reload of the instance world.
+        """
+        paused_on_world_preview = False
+        paused_on_world_load = True
+        while True:
+            last_line = (
+                subprocess.check_output(
+                    ["tail", "-n 1", self.instance_directory + "logs/latest.log"]
                 )
+                .decode("UTF-8")
+                .strip()
             )
-            return False, 0
-    return False, 0
-
-
-def handle_reset_keybinds(reset_all_keybinds, reset_one_keybinds, hex_codes, pids):
-    """
-    This is the function that handles the reset keybinds.
-
-    reset_all_keybinds
-    The list of keybinds to reset all open instances as strings.
-
-    reset_one_keybinds
-    The list of keybinds to reset the current open instance as strings.
-
-    hex_codes
-    The list of hex codes of the open Minecraft instances as strings.
-
-    pids
-    The dictionary of the process IDs of the open Minecraft instances.
-
-    Returns True if any instance was reset, else False.
-    """
-    for reset_all_keybind in reset_all_keybinds:
-        if keyboard.is_pressed(reset_all_keybind):
-            reset_macro.reset_all_macro(hex_codes, pids)
-            logger.log("All instances were reset.")
-            return True
-
-    for reset_one_keybind in reset_one_keybinds:
-        if keyboard.is_pressed(reset_one_keybind):
-            hex_code = reset_macro.reset_current_macro()
-            logger.log("Instance with hex code: {} was reset.".format(hex_code))
-            return True
-
-    return False
-
-
-def handle_suspend_keybinds(suspend_all_keybinds, pids):
-    """
-    This is the function that handles the suspend keybinds.
-
-    suspend_all_keybinds
-    The list of the keybinds to suspend all instances as strings.
-
-    pids
-    The dictionary of the process IDs of the open Minecraft instances.
-
-    Returns None
-    """
-    for suspend_all_keybind in suspend_all_keybinds:
-        if keyboard.is_pressed(suspend_all_keybind):
-            hex_code = suspend_macro.suspend_all_macro(pids)
-            logger.log(
-                "All instances other than the instance with hex code: {} were suspended.".format(
-                    hex_code
-                )
-            )
-
-
-def handle_unsuspend_keybinds(unsuspend_all_keybinds, pids):
-    """
-    This is the function that handles the unsuspend keybinds.
-
-    unsuspend_all_keybinds
-    The list of the keybinds to unsuspend all instances as strings.
-
-    pids
-    The dictionary of the process IDs of the open Minecraft instances.
-
-    Returns None
-    """
-    for unsuspend_all_keybind in unsuspend_all_keybinds:
-        if keyboard.is_pressed(unsuspend_all_keybind):
-            suspend_macro.unsuspend_all_macro(pids)
-            logger.log("All instances were unsuspended.")
-
-
-def handle_wall_keybinds(
-    switched_to_instance_without_resetting,
-    has_reset,
-    instance_number,
-    obs_hex_code,
-    host,
-    port,
-    password,
-    wall_scene_name,
-):
-    """
-    This is the function that handles the wall keybinds.
-
-    switched_to_instance_without_resetting
-    The boolean which signifies whether the user has switched to an instance without resetting anything else.
-
-    has_reset
-    The boolean which signifies whether the user has reset one or more instances.
-
-    instance_number
-    The integer instance number of the instance that the user switched to. Equal to zero when the first parameter is False.
-
-    obs_hex_code
-    The hex code of the OBS studio window as a string.
-
-    host
-    The hostname of the OBS websocket server.
-
-    port
-    The port to connect to the OBS websocket server.
-
-    password
-    The password to be used to connect to the OBS websocket server.
-
-    wall_scene_name
-    The name of the wall scene on OBS as a string.
-
-    Returns None if the code was executed successfully, else -1
-    """
-    if switched_to_instance_without_resetting:
-        instance_name = config.INSTANCE_SCENE_NAMES[instance_number]
-        return_code = wall_macro.wall_switch_macro(
-            "",
-            config.WEBSOCKET_HOST,
-            config.WEBSOCKET_PORT,
-            config.WEBSOCKET_PASSWORD,
-            instance_name,
-            switch_to_wall=False,
-        )
-        if return_code == -1:
-            logger.log(
-                "Couldn't find instance named '{}' in the list of scenes.".format(
-                    instance_name
-                )
-            )
-            return -1
-        logger.log("Switched to instance and OBS on scene '{}'.".format(instance_name))
-    elif has_reset:
-        return_code = wall_macro.wall_switch_macro(
-            obs_hex_code,
-            config.WEBSOCKET_HOST,
-            config.WEBSOCKET_PORT,
-            config.WEBSOCKET_PASSWORD,
-            wall_scene_name,
-        )
-        if return_code == -1:
-            logger.log(
-                "Could not find the scene '{}' in the list of scenes.".format(
-                    wall_scene_name
-                )
-            )
-            return -1
-        logger.log("Switched to OBS studio on scene '{}'.".format(wall_scene_name))
-    else:
-        switch_to_wall_keybinds = config.SWITCH_TO_WALL
-        for switch_to_wall_keybind in switch_to_wall_keybinds:
-            if keyboard.is_pressed(switch_to_wall_keybind):
-                if obs_hex_code is None:
-                    return -1
-                return_code = wall_macro.wall_switch_macro(
-                    obs_hex_code, host, port, password, wall_scene_name
-                )
-                if return_code == -1:
+            if last_line[::-1][0] == "%" and not paused_on_world_preview:
+                percent_world_load = int(last_line[::-1][1:3])
+                if percent_world_load >= 80:
+                    current_window_base_ten = subprocess.check_output(
+                        ["xdotool", "getactivewindow"]
+                    ).decode("UTF-8")
+                    current_hex_code = hex(int(current_window_base_ten))
+                    os.system("wmctrl -i -a {}".format(self.hex_code))
+                    time.sleep(0.25)
+                    os.system("xdotool key --window {} F3+Escape".format(self.hex_code))
+                    os.system("wmctrl -i -a {}".format(current_hex_code))
+                    paused_on_world_preview = True
+                    paused_on_world_load = False
                     logger.log(
-                        "Could not find the scene '{}' in the list of scenes.".format(
-                            wall_scene_name
+                        "Paused instance with hex code: '{}' on 80% world reload.".format(
+                            self.hex_code
                         )
                     )
-                    return -1
+
+                if percent_world_load >= 95:
+                    os.system("wmctrl -i -a {}".format(self.hex_code))
+                    logger.log(
+                        "Switched to instance with hex code: '{}' on 95% world reload.".format(
+                            self.hex_code
+                        )
+                    )
+            if last_line.find("joined the game") != -1 and not paused_on_world_load:
+                current_window_base_ten = subprocess.check_output(
+                    ["xdotool", "getactivewindow"]
+                ).decode("UTF-8")
+                current_window = hex(int(current_window_base_ten))
+                os.system("wmctrl -i -a {}".format(self.hex_code))
+                time.sleep(0.25)
+                os.system("xdotool key --window {} F3+Escape".format(self.hex_code))
+                os.system("wmctrl -i -a {}".format(current_window))
+                paused_on_world_preview = False
+                paused_on_world_load = True
                 logger.log(
-                    "Switched to OBS Studio on scene '{}'.".format(wall_scene_name)
+                    "Paused instance with hex code: '{}' on 100% world load.".format(
+                        self.hex_code
+                    )
                 )
 
 
-def handle_keybinds(hex_codes, obs_hex_code, pids):
+class Obs:
     """
-    Handles the keybinds defined in config.py.
-
-    hex_codes
-    A list of the corresponding hex codes of the open instances.
-
-    obs_hex_code
-    The hex code of the open OBS window as a string.
-
-    pids
-    A dictionary of the pids of the open instances.
-
-    Returns None if the script executed successfully, else -1 for any errors.
+    A Class that denotes the open OBS window with the necessary methods.
     """
-    using_wall = config.USING_WALL
-    config.INSTANCE_SCENE_NAMES = config.INSTANCE_SCENE_NAMES[: len(hex_codes)]
-    config.SWITCH_INSTANCES = config.SWITCH_INSTANCES[: len(hex_codes)]
-    config.SWITCH_AND_RESET_INSTANCES = config.SWITCH_AND_RESET_INSTANCES[
-        : len(hex_codes)
-    ]
-    while True:
-        (
-            switched_to_instance_without_resetting,
-            instance_number,
-        ) = handle_instance_keybinds(
-            config.SWITCH_INSTANCES,
-            config.SWITCH_AND_RESET_INSTANCES,
-            hex_codes,
-            pids,
-            config.PERFORMANCE_MODE,
-        )
-        has_reset = handle_reset_keybinds(
-            config.RESET_ALL_INSTANCES, config.RESET_CURRENT_INSTANCE, hex_codes, pids
-        )
-        handle_suspend_keybinds(config.SUSPEND_ALL_INSTANCES, pids)
-        handle_unsuspend_keybinds(config.UNSUSPEND_ALL_INSTANCES, pids)
 
-        if using_wall:
-            return_code = handle_wall_keybinds(
-                switched_to_instance_without_resetting,
-                has_reset,
-                instance_number,
-                obs_hex_code,
-                config.WEBSOCKET_HOST,
-                config.WEBSOCKET_PORT,
-                config.WEBSOCKET_PASSWORD,
-                config.WALL_SCENE_NAME,
+    def __init__(self, hex_code, host, port, password, wall_keybind):
+        """
+        hex_code
+        The string denoting the hex code of the OBS window.
+
+        host
+        The string denoting the hostname of the websocket server.
+
+        port
+        The integer denoting the open port of the websocket server.
+
+        password
+        The string denoting the password to authenticate with the websocket server.
+
+        wall_keybind
+        The string denoting the keybind to switch to the wall scene.
+        """
+        self.hex_code = hex_code
+        self.host = host
+        self.port = port
+        self.password = password
+        self.wall_keybind = wall_keybind
+
+    def make_connection(self):
+        """
+        Method to make the connection to the websocket server.
+        """
+        self.con_obj = obsws(self.host, self.port, self.password)
+        self.con_obj.connect()
+        logger.log(
+            "Connected to websocket server. Connection info: Host: {}, Port: {}".format(
+                self.host, self.port
             )
-            if return_code == -1:
-                return -1
+        )
+
+    def switch_to_scene(self, scene):
+        """
+        Method to switch to the scene named scene.
+
+        scene
+        The string denoting the name of the scene.
+        """
+        scene_object = self.con_obj.call(requests.GetSceneList())
+        list_scenes = scene_object.datain["scenes"]
+        for scenes in list_scenes:
+            if scenes["name"] == scene:
+                self.con_obj.call(requests.SetCurrentScene(scene))
+                logger.log("Switched to scene: '{}'.".format(scene))
+                return 0
+        else:
+            return -1
+
+    def handle_switch_keybind(self):
+        """
+        Method to handle switching to the wall scene and the OBS window.
+        """
+        while True:
+            if keyboard.is_pressed(self.wall_keybind):
+                ret_code = self.switch_to_scene(config.WALL_SCENE_NAME)
+                if ret_code == -1:
+                    logger.log(
+                        "Couldn't find the scene '{}' in the scene list".format(
+                            config.WALL_SCENE_NAME
+                        )
+                    )
+                os.system("wmctrl -i -a {}".format(self.hex_code))
+
+
+def get_current_hex_code():
+    """
+    The function to get the hex code of the window in focus.
+
+    Returns the string denoting the hex code.
+    """
+    window_id_base_ten = subprocess.check_output(["xdotool", "getwindowfocus"]).decode(
+        "UTF-8"
+    )
+    window_hex = hex(int(window_id_base_ten))
+    digits_after_x = len(window_hex.split("x")[1])
+    if digits_after_x <= 7:
+        window_hex = (
+            window_hex.split("x")[0]
+            + "x"
+            + "0" * (8 - digits_after_x)
+            + window_hex.split("x")[1]
+        )
+    return window_hex
 
 
 def start():
@@ -373,37 +269,119 @@ def start():
     Returns 0 if the script was executed successfully else -1 for any configuration error.
     """
     try:
-        hex_codes = get_hex_codes()
+        hex_codes = script_setup.get_hex_codes()
         logger.log("Hex codes of the windows obtained. Hex Codes: {}".format(hex_codes))
-        pids = get_process_ids(hex_codes)
+        pids = script_setup.get_process_ids(hex_codes)
         logger.log("PIDs of the windows obtained. PIDs: {}".format(pids))
-        obs_hex_code = get_obs_hex_code()
+        obs_hex_code = script_setup.get_obs_hex_code(config.USING_PROJECTOR)
         logger.log("Hex code of OBS window obtained. Hex Code: {}".format(obs_hex_code))
         if len(hex_codes) == 0:
             logger.log("No Minecraft instances detected.")
             return -1
-        return_code = handle_keybinds(hex_codes, obs_hex_code, pids)
-        if return_code == -1:
-            return return_code
+        instances = []
+        config.INSTANCE_SCENE_NAMES = config.INSTANCE_SCENE_NAMES[: len(hex_codes)]
+        config.SWITCH_INSTANCES = config.SWITCH_INSTANCES[: len(hex_codes)]
+        config.SWITCH_AND_RESET_INSTANCES = config.SWITCH_AND_RESET_INSTANCES[
+            : len(hex_codes)
+        ]
+        config.INSTANCE_DIRECTORIES = config.INSTANCE_DIRECTORIES[: len(hex_codes)]
+        for i in range(len(hex_codes)):
+            instance = Instance(
+                hex_codes[i],
+                pids[hex_codes[i]],
+                config.SWITCH_INSTANCES[i],
+                config.INSTANCE_DIRECTORIES[i],
+                config.INSTANCE_SCENE_NAMES[i],
+            )
+            instances.append(instance)
+        for instance in instances:
+            switch_thread = threading.Thread(target=instance.handle_switch_keybind)
+            pause_thread = threading.Thread(target=instance.pause_on_reload)
+            switch_thread.start()
+            pause_thread.start()
+
+        obs = Obs(
+            obs_hex_code,
+            config.WEBSOCKET_HOST,
+            config.WEBSOCKET_PORT,
+            config.WEBSOCKET_PASSWORD,
+            config.SWITCH_TO_WALL,
+        )
+        if config.USING_WALL:
+            obs.make_connection()
+        obs_thread = threading.Thread(target=obs.handle_switch_keybind)
+        obs_thread.start()
+
+        while True:
+            for reset_all_keybind in config.RESET_ALL_INSTANCES:
+                if keyboard.is_pressed(reset_all_keybind):
+                    for instance in instances:
+                        os.system("wmctrl -i -a {}".format(instance.hex_code))
+                        os.system(
+                            "xdotool key --window {} Escape".format(instance.hex_code)
+                        )
+                        instance.reset()
+                        if config.USING_WALL:
+                            ret_code = obs.switch_to_scene(config.WALL_SCENE_NAME)
+                            if ret_code == -1:
+                                logger.log(
+                                    "Couldn't find the scene '{}' in the scene list.".format(
+                                        config.WALL_SCENE_NAME
+                                    )
+                                )
+                            os.system("wmctrl -i -a {}".format(obs.hex_code))
+
+            for instance_reset_keybind in config.SWITCH_AND_RESET_INSTANCES:
+                if keyboard.is_pressed(instance_reset_keybind):
+                    idx = config.SWITCH_AND_RESET_INSTANCES.index(
+                        instance_reset_keybind
+                    )
+                    except_instance = hex_codes[idx]
+                    for instance in instances:
+                        if instance.hex_code != except_instance:
+                            instance.reset()
+                        if instance.hex_code == except_instance and config.USING_WALL:
+                            ret_code = obs.switch_to_scene(instance.wall_scene_name)
+                            if ret_code == -1:
+                                logger.log(
+                                    "Couldn't find the scene '{}' in the scene list.".format(
+                                        instance.wall_scene_name
+                                    )
+                                )
+
+            for reset_one_keybind in config.RESET_CURRENT_INSTANCE:
+                if keyboard.is_pressed(reset_one_keybind):
+                    window_hex = get_current_hex_code()
+                    for instance in instances:
+                        if instance.hex_code == window_hex:
+                            instance.reset()
+                            if config.USING_WALL:
+                                ret_code = obs.switch_to_scene(config.WALL_SCENE_NAME)
+                                if ret_code == -1:
+                                    logger.log(
+                                        "Couldn't find the scene '{}' in the scene list.".format(
+                                            config.WALL_SCENE_NAME
+                                        )
+                                    )
+                                os.system("wmctrl -i -a {}".format(obs.hex_code))
+                            break
+
+            for instance_switch_keybind in config.SWITCH_INSTANCES:
+                if keyboard.is_pressed(instance_switch_keybind):
+                    idx = config.SWITCH_INSTANCES.index(instance_switch_keybind)
+                    if config.USING_WALL:
+                        ret_code = obs.switch_to_scene(config.INSTANCE_SCENE_NAMES[idx])
+                        if ret_code == -1:
+                            logger.log(
+                                "Couldn't find instance '{}' in the scene list.".format(
+                                    config.INSTANCE_SCENE_NAMES[idx]
+                                )
+                            )
+
     except KeyboardInterrupt:
+        if config.USING_WALL:
+            obs.con_obj.disconnect()
         return 0
-
-
-def get_config(project_root, config_dir):
-    """
-    The function to copy the default configuration file to the user's config directory.
-
-    project_root
-    The root directory of the project represented as a string.
-
-    config_dir
-    The .config directory of the user represented as a string.
-
-    Returns None.
-    """
-    config_file = project_root + "/default_config.py"
-    target_file = config_dir + "/MultiInstanceLinux/config.py"
-    os.system("cp {} {}".format(config_file, target_file))
 
 
 def main(project_root):
@@ -428,16 +406,17 @@ def main(project_root):
     if not os.path.isdir("{}/logs/".format(log_dir)):
         if not os.path.isdir(log_dir):
             os.mkdir(log_dir)
+        if not os.path.isdir(log_dir + "/config"):
+            os.mkdir(log_dir + "/config")
         os.mkdir("{}/logs/".format(log_dir))
     global logger
     logger = Logging("{}/logs/".format(log_dir))
     sys.path.append(log_dir)
-    if not os.path.isfile(config_dir + "/MultiInstanceLinux/config.py"):
-        get_config(project_root, config_dir)
+    if not os.path.isfile(config_dir + "/MultiInstanceLinux/config/config.py"):
+        script_setup.get_config(project_root, config_dir)
     global config
-    import config
+    import config.config as config
 
-    os.chdir(project_root)
     return_code = start()
 
     if return_code == 0:

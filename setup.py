@@ -1,9 +1,11 @@
 from setuptools import setup
 
+
 def get_long_description():
     with open("README.md", "r") as file:
         long_description = file.read()
         return long_description
+
 
 setup(
     name="MultiInstanceLinux",
@@ -25,8 +27,10 @@ setup(
     install_requires=["keyboard", "obs-websocket-py"],
     entry_points={
         "console_scripts": [
-            "multiinstancelinux = MultiInstanceLinux.__init__:main",
+            "multiinstancelinux = MultiInstanceLinux.init:main",
         ]
     },
-    package_data={'MultiInstanceLinux':['src/MultiInstanceLinux/default_config.py']},
+    package_data={
+        "MultiInstanceLinux": ["src/MultiInstanceLinux/config/default_config.py"]
+    },
 )

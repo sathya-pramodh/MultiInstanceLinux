@@ -37,10 +37,10 @@ WEBSOCKET_PASSWORD = "changeme"
 WALL_SCENE_NAME = "Verification"
 
 # The list of keybinds to switch to the wall, i.e, switch to OBS on the 'WALL_SCENE_NAME' scene.
-# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
+# The value must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
 # The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
-# The default is ["ctrl+o"]
-SWITCH_TO_WALL = ["ctrl+o"]
+# The default is "ctrl+o"
+SWITCH_TO_WALL = "ctrl+o"
 
 # The list of names of the scenes (in order of instance number).
 # Be very careful while listing these names.
@@ -57,13 +57,6 @@ INSTANCE_SCENE_NAMES = [
     "Instance 8",
     "Instance 9",
 ]
-
-# This is a performance option.
-# Allowed values are "F","N" and "".
-# "F" - Auto suspend on switching instances.
-# "N" and "" - Do not use any performance optimization.
-# The default is "N".
-PERFORMANCE_MODE = "N"
 
 # The list of keybinds for switching instances (in order of instance number).
 # Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
@@ -96,6 +89,16 @@ SWITCH_AND_RESET_INSTANCES = [
     "shift+8",
     "shift+9",
 ]
+
+# The absolute paths to the directories of the instances ordered by instance number.
+# Absolute paths imply the full paths. Example: /home/sampleuser/Instance1/
+# If you are using MultiMC or any of its forks, it should look like this:
+# "/home/<your_username>/multimc/instances/<instance_name>/minecraft/"
+# Check whether the directory you are pointing to has a logs directory in it.
+# This is used to pause the instance on world load.
+# The length of the list MUST be 9 or more.
+# The default is not specified.
+INSTANCE_DIRECTORIES = [""]
 
 # The list of keybinds for resetting all instances.
 # You can use multiple keys to reset the instances.
