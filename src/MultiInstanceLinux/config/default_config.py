@@ -39,8 +39,8 @@ WALL_SCENE_NAME = "Verification"
 # The list of keybinds to switch to the wall, i.e, switch to OBS on the 'WALL_SCENE_NAME' scene.
 # The value must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
 # The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
-# The default is "ctrl+o"
-SWITCH_TO_WALL = "ctrl+o"
+# The default is "o"
+SWITCH_TO_WALL = "o"
 
 # The list of names of the scenes (in order of instance number).
 # Be very careful while listing these names.
@@ -96,30 +96,17 @@ SWITCH_AND_RESET_INSTANCES = [
 # "/home/<your_username>/multimc/instances/<instance_name>/minecraft/"
 # Check whether the directory you are pointing to has a logs directory in it.
 # This is used to pause the instance on world load.
-# The length of the list MUST be 9 or more.
 # The default is not specified.
 INSTANCE_DIRECTORIES = [""]
 
 # The list of keybinds for resetting all instances.
 # You can use multiple keys to reset the instances.
-# The default is ["ctrl+r"].
-RESET_ALL_INSTANCES = ["ctrl+r"]
+# The default is ["u"].
+RESET_ALL_INSTANCES = ["u"]
 
 # The list of keybinds for resetting the current instance in focus.
 # Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
 # The allowed values for the keyboard module can be found at: https://github.com/boppreh/keyboard
 # Note: Do not use 'alt' instead of 'shift' here because the macro contains 'Tab' as a part of it and 'alt+tab' is already a keybind in most desktop environments.
-# The default is ["shift+r"]
-RESET_CURRENT_INSTANCE = ["shift+r"]
-
-# The list of keybinds for suspending instances other than the active instance.
-# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
-# The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
-# The default is ["ctrl+s"]
-SUSPEND_ALL_INSTANCES = ["ctrl+s"]
-
-# The list of keybinds for un-suspending all instances.
-# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
-# The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
-# The default is ["alt+s"]
-UNSUSPEND_ALL_INSTANCES = ["alt+s"]
+# The default is ["p"]
+RESET_CURRENT_INSTANCE = ["p"]

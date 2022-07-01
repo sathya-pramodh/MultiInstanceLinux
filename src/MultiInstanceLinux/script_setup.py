@@ -100,6 +100,6 @@ def get_config(project_root, config_dir):
 
     Returns None.
     """
-    config_file = project_root + "config/default_config.py"
+    config_file = project_root + "/config/default_config.py"
     target_file = config_dir + "/MultiInstanceLinux/config/config.py"
     os.system("cp {} {}".format(config_file, target_file))
