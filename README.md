@@ -67,7 +67,7 @@ sudo pip install MultiInstanceLinux==<The version of testing released>
 - The latest version of testing released can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
 - For example: If the version code is `v1.3.0-testing` then execute
 ```
-sudo pip install MultiInstanceLinux==1.3.0-testing
+sudo pip install MultiInstanceLinux==1.3.0
 ```
 
 # Usage
