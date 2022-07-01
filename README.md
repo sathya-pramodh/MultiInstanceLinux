@@ -7,6 +7,7 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - OBS integration for Wall Resetting.
 - Full keyboard support.
 - Distributed through pip for easy installation.
+- Multi Threading for better script performance.
 - An "almost" drop-in repleacement on Linux for [Specnr's macro designed for Windows](https://github.com/Specnr/MultiResetWall)
 
 # Dependencies
@@ -59,6 +60,11 @@ yay -S obs-websocket
 ```
 sudo pip install MultiInstanceLinux
 ```
+- If you want to support the project by testing new code pushed to the repository, then execute this command.
+```
+sudo pip install MultiInstanceLinux==<The version of testing released>
+```
+- The version of testing released can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
 
 # Usage
 - This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
@@ -73,6 +79,7 @@ sudo multiinstancelinux
 - If you do not want to use wall resetting, make sure to set the same keybinds as the macro to switch instances and to switch scenes. For example, in the default config, one would have to set `Ctrl+1` to switch to the instance named "Instance 1" in OBS.
 - Log files are located in the 'log' directory in the project script's main folder. So, issues must be submitted with the relevant log files attached to them.
 - The 'testing' branch is meant only for testing purposes and releases from that branch are created with the '-testing' tag at the end of them.
+- The launch order of the instances is very important. Make sure you launch the instances in ascending order of instance number.
 
 # Contribution
 - Code contributions can be made to the testing branch. Pull requests must be made with proper comments and documentation.
@@ -104,7 +111,7 @@ sudo multiinstancelinux
 - `Shift+9` - Switch to Instance 9 and reset all others.
 
 # Configuration
-- All configurations can be done in config.py which is located in the .config/MultiInstanceLinux/ directory of your home folder.
+- All configurations can be done in config.py which is located in the `.config/MultiInstanceLinux/` directory of your home folder.
 - A default config is provided and the script will rollback to it if it doesn't find the file in the working directory.
 - A new config.py will be created from the default config if a config.py doesn't exist already.
 
