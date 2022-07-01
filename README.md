@@ -58,13 +58,18 @@ yay -S obs-websocket
 - Use sudo to install the package as pip by default installs packages in `.local/` directory which is usually not in PATH for many distros.
 - By using sudo, it installs the package in `/usr/` which is in PATH by default.
 ```
-sudo pip install MultiInstanceLinux
+sudo pip install MultiInstanceLinux==<The version of the stable release>
+```
+- The latest version of the stable release can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
+- For example: If the version code is `v1.2.7` then execute
+```
+sudo pip install MultiInstanceLinux==1.2.7
 ```
 - If you want to support the project by testing new code pushed to the repository, then execute this command.
 ```
-sudo pip install MultiInstanceLinux==<The version of testing released>
+sudo pip install MultiInstanceLinux==<The version of testing release>
 ```
-- The latest version of testing released can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
+- The latest version of testing release can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
 - For example: If the version code is `v1.3.0-testing` then execute
 ```
 sudo pip install MultiInstanceLinux==1.3.0
