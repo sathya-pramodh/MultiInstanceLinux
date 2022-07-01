@@ -124,7 +124,6 @@ sudo multiinstancelinux
 - WALL_SCENE_NAME - The name of the wall scene on OBS.
 - SWITCH_TO_WALL - The list of keybinds to switch to the wall scene on OBS.
 - INSTANCE_SCENE_NAMES - The list of scene names (in order of instance number) on OBS.
-- PERFORMANCE_MODE - The performance enhancement option while multi instancing.
 - SWITCH_INSTANCES - The list of keybinds (in order of instance number) to switch to that respective instance.
 - SWITCH_AND_RESET_INSTANCES - The list of keybinds (in order of instance number) to reset all other instances and switch to an instance.
 - RESET_ALL_INSTANCES - The list of keybinds to reset all instances.
