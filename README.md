@@ -64,7 +64,11 @@ sudo pip install MultiInstanceLinux
 ```
 sudo pip install MultiInstanceLinux==<The version of testing released>
 ```
-- The version of testing released can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
+- The latest version of testing released can be found in the [releases](https://github.com/sathya-pramodh/MultiInstanceLinux/releases) tab.
+- For example: If the version code is `v1.3.0-testing` then execute
+```
+sudo pip install MultiInstanceLinux==1.3.0-testing
+```
 
 # Usage
 - This command must be executed in a terminal each time you want to use the macro. You could set it up so that the script runs each time you start up all the instances of Minecraft.
