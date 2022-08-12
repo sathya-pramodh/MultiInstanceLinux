@@ -31,8 +31,8 @@ This is the setup script for MultiInstanceLinux.
 # SOFTWARE.
 
 # Imports
-import subprocess
 import os
+import subprocess
 
 
 def get_hex_codes():

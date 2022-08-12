@@ -36,14 +36,16 @@ https://github.com/sathya-pramodh/MultiInstanceLinux/
 
 # Imports
 import os
-import time
-import sys
-import keyboard
-import threading
 import subprocess
-import script_setup
+import sys
+import threading
+import time
+
+import keyboard
 from obswebsocket import obsws, requests
+
 from helper_modules.logging import Logging
+import script_setup
 
 
 class Instance:
@@ -150,7 +152,11 @@ class Instance:
                             self.hex_code
                         )
                     )
-            if last_line.find("joined the game") != -1 and not paused_on_world_load:
+
+            if (
+                last_line.find("logged in with entity id") != -1
+                and not paused_on_world_load
+            ):
                 current_window_base_ten = subprocess.check_output(
                     ["xdotool", "getactivewindow"]
                 ).decode("UTF-8")
@@ -281,9 +287,6 @@ def start():
         instances = []
         config.INSTANCE_SCENE_NAMES = config.INSTANCE_SCENE_NAMES[: len(hex_codes)]
         config.SWITCH_INSTANCES = config.SWITCH_INSTANCES[: len(hex_codes)]
-        config.SWITCH_AND_RESET_INSTANCES = config.SWITCH_AND_RESET_INSTANCES[
-            : len(hex_codes)
-        ]
         config.INSTANCE_DIRECTORIES = config.INSTANCE_DIRECTORIES[: len(hex_codes)]
         for i in range(len(hex_codes)):
             instance = Instance(
@@ -330,24 +333,6 @@ def start():
                                     )
                                 )
                             os.system("wmctrl -i -a {}".format(obs.hex_code))
-
-            for instance_reset_keybind in config.SWITCH_AND_RESET_INSTANCES:
-                if keyboard.is_pressed(instance_reset_keybind):
-                    idx = config.SWITCH_AND_RESET_INSTANCES.index(
-                        instance_reset_keybind
-                    )
-                    except_instance = hex_codes[idx]
-                    for instance in instances:
-                        if instance.hex_code != except_instance:
-                            instance.reset()
-                        if instance.hex_code == except_instance and config.USING_WALL:
-                            ret_code = obs.switch_to_scene(instance.wall_scene_name)
-                            if ret_code == -1:
-                                logger.log(
-                                    "Couldn't find the scene '{}' in the scene list.".format(
-                                        instance.wall_scene_name
-                                    )
-                                )
 
             for reset_one_keybind in config.RESET_CURRENT_INSTANCE:
                 if keyboard.is_pressed(reset_one_keybind):
