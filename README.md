@@ -41,15 +41,6 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - `Ctrl+7` - Switch to Instance 7
 - `Ctrl+8` - Switch to Instance 8
 - `Ctrl+9` - Switch to Instance 9
-- `Shift+1` - Switch to Instance 1 and reset all others.
-- `Shift+2` - Switch to Instance 2 and reset all others.
-- `Shift+3` - Switch to Instance 3 and reset all others.
-- `Shift+4` - Switch to Instance 4 and reset all others.
-- `Shift+5` - Switch to Instance 5 and reset all others.
-- `Shift+6` - Switch to Instance 6 and reset all others.
-- `Shift+7` - Switch to Instance 7 and reset all others.
-- `Shift+8` - Switch to Instance 8 and reset all others.
-- `Shift+9` - Switch to Instance 9 and reset all others.
 
 # Configuration
 - Configuration instructions and variable descriptions have been moved to the wiki. Refer [here](https://github.com/sathya-pramodh/MultiInstanceLinux/wiki/6.-Configuring-the-Script).
