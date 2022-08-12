@@ -74,22 +74,6 @@ SWITCH_INSTANCES = [
     "ctrl+Num 9",
 ]
 
-# The list of keybinds for switching to a particular instance and resetting all other instances.
-# Each element of the list must adhere to the allowed values of the keyboard module, else the script will exit out with an error message.
-# The allowed values of the keyboard module can be found at: https://github.com/boppreh/keyboard
-# The default is ["shift+1", "shift+2", "shift+3", "shift+4", "shift+5", "shift+6", "shift+7", "shift+8", "shift+9"]
-SWITCH_AND_RESET_INSTANCES = [
-    "shift+1",
-    "shift+2",
-    "shift+3",
-    "shift+4",
-    "shift+5",
-    "shift+6",
-    "shift+7",
-    "shift+8",
-    "shift+9",
-]
-
 # The absolute paths to the directories of the instances ordered by instance number.
 # Absolute paths imply the full paths. Example: /home/sampleuser/Instance1/
 # If you are using MultiMC or any of its forks, it should look like this:
