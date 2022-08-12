@@ -9,7 +9,7 @@ def get_long_description():
 
 setup(
     name="MultiInstanceLinux",
-    version="1.3.4",
+    version="1.3.5",
     author="sathya-pramodh",
     author_email="sathyapramodh17@gmail.com",
     description="Multi Instance Macro Handler for Minecraft on Linux.",
