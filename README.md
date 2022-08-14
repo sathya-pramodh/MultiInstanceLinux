@@ -55,3 +55,7 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - [Specnr](https://github.com/specnr) for creating the macro for Windows.
 - Everyone else that Specnr mentioned [here](https://github.com/specnr/MultiResetWall).
 - All the devs of the dependency packages/modules.
+
+# Note
+- This repository is now archived. For an alternative and better macro check: https::/github.com/woofdoggo/resetti
+- Thanks :)
