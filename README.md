@@ -57,5 +57,5 @@ Multi Instance Macro Handler for Minecraft on Linux.
 - All the devs of the dependency packages/modules.
 
 # Note
-- This repository is now archived. For an alternative and better macro check: https::/github.com/woofdoggo/resetti
+- This repository is now archived. For an alternative and better macro check: https://github.com/woofdoggo/resetti
 - Thanks :)
